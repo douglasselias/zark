@@ -1,0 +1,8 @@
+(+ 1 2)
+
+(let start 0)
+(let (start 0) (current 0) (line 1))
+(let
+  (start 0)
+  (current 0)
+  (line (+ start current)))
