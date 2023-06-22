@@ -1,44 +1,13 @@
 // import fs from 'fs'
 // import readline from 'readline'
+import { readTokens } from './compiler/token-reader'
+import { tokenize } from './compiler/tokenizer'
 
 const { log } = console
 
 // const reader = readline.createInterface({ input: process.stdin, output: process.stdout, })
 
 // const file = fs.readFileSync('main.zark').toString()
-
-export const tokenize = (source: string): string[] =>
-  source
-    .replace(/\(/g, ' ( ')
-    .replace(/\)/g, ' ) ')
-    .split(/\s+/g)
-    .filter(char => !(/\s+/g.test(char) || char === ''))
-
-export const readTokens = (tokens: string[]): any[] => {
-  if (tokens.length === 0)
-    throw new Error('Unexpected EOF')
-
-  const token = tokens.shift()!
-
-  if (token === '(') {
-    const list: any[] = []
-    while (tokens[0] != ')')
-      list.push(readTokens(tokens))
-    tokens.shift()
-    return list
-  }
-
-  if (token === ')')
-    throw new Error('Unexpected )')
-
-  return atom(token)
-}
-
-const atom = (token: string): any => {
-  if (/\d+/g.test(token)) return parseInt(token)
-  // if(token === '+') return '+'
-  return token
-}
 
 export const defaultEnv: Record<string, Function> = {
   '+': (numbers: number[]) => numbers.reduce((a, b) => a + b),
@@ -57,7 +26,7 @@ export const evaluate = (expression: Expression, env = defaultEnv) => {
     const constants: Record<string, number> = { PI: Math.PI, }
     if (expression in constants) return constants[expression]
     if (expression in env) return env[expression]
-    
+
     throw new Error(`Nome desconhecido: ${expression}`)
   }
 
