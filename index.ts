@@ -1,20 +1,20 @@
-import fs from 'fs'
-import readline from 'readline'
+// import fs from 'fs'
+// import readline from 'readline'
 
 const { log } = console
 
-const reader = readline.createInterface({ input: process.stdin, output: process.stdout, })
+// const reader = readline.createInterface({ input: process.stdin, output: process.stdout, })
 
-const file = fs.readFileSync('main.zark').toString()
+// const file = fs.readFileSync('main.zark').toString()
 
-const tokenize = (source: string): string[] =>
+export const tokenize = (source: string): string[] =>
   source
     .replace(/\(/g, ' ( ')
     .replace(/\)/g, ' ) ')
     .split(/\s+/g)
     .filter(char => !(/\s+/g.test(char) || char === ''))
 
-const readTokens = (tokens: string[]): any[] => {
+export const readTokens = (tokens: string[]): any[] => {
   if (tokens.length === 0)
     throw new Error('Unexpected EOF')
 
@@ -40,17 +40,17 @@ const atom = (token: string): any => {
   return token
 }
 
-const defaultEnv: Record<string, Function> = {
+export const defaultEnv: Record<string, Function> = {
   '+': (numbers: number[]) => numbers.reduce((a, b) => a + b),
   '*': (numbers: number[]) => numbers.reduce((a, b) => a * b),
   // 'define': (name: string, value: any, env: any) => env[name] = value,
 }
 
-const parse = (source: string) => readTokens(tokenize(source))
+export const parse = (source: string) => readTokens(tokenize(source))
 
 type Expression = number | string | Expression[]
 
-const evaluate = (expression: Expression, env = defaultEnv) => {
+export const evaluate = (expression: Expression, env = defaultEnv) => {
   if (typeof expression === 'number') return expression
 
   if (typeof expression === 'string') {
@@ -89,15 +89,13 @@ const evaluate = (expression: Expression, env = defaultEnv) => {
 // log(evaluate(parse('(begin (define r 10) (* r r))')))
 // log(evaluate(parse('(define r 10) (* r r)')))
 
+// const repl = () => {
+//   reader.question('(Zark) * ', input => {
+//     log(evaluate(parse(input)))
+//     return input === 'exit' ? reader.close() : repl()
+//   })
+// }
 
-
-const repl = () => {
-  reader.question('(Zark) * ', input => {
-    log(evaluate(parse(input)))
-    return input === 'exit' ? reader.close() : repl()
-  })
-}
-
-repl()
+// repl()
 
 // process.exit(0)
