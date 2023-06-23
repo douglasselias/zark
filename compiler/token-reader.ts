@@ -24,9 +24,9 @@ const atom = (token: string): number | string => {
   return token.toUpperCase()
 }
 
-type Expression = number | string | Expression[]
 
 declare global {
+  type Expression = number | string | Expression[]
   interface Array<T> {
     notIncludes(value: T): boolean
   }
