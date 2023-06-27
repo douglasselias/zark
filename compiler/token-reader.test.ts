@@ -11,7 +11,7 @@ describe('readTokens', () => {
   })
 
   it('single atom', () => {
-    expect(readTokens(['pi'])).toEqual('PI')
+    expect(readTokens(['pi'])).toEqual('pi')
   })
 
   it.skip('multiple atoms', () => {
@@ -31,7 +31,7 @@ describe('readTokens', () => {
   })
 
   it('single expression', () => {
-    expect(readTokens(['(', '1','2', ')'])).toEqual([1,2])
+    expect(readTokens(['(', '1', '2', ')'])).toEqual([1, 2])
   })
 
   it('nested expression', () => {
@@ -41,10 +41,16 @@ describe('readTokens', () => {
 
   it('nested expression', () => {
     expect(readTokens(['(', 'sum', '1', '2',
-      '(', 'prod', '3', '4', ')', ')'])).toEqual(['SUM', 1, 2, ['PROD', 3, 4]])
+      '(', 'prod', '3', '4', ')', ')'])).toEqual(['sum', 1, 2, ['prod', 3, 4]])
   })
 
-  it.skip('nested expression', () => {
-    expect(readTokens(['(', '+', '1', '2', ')'])).toEqual(['+', 1, 2])
+  it('expression with variable/symbol', () => {
+    expect(readTokens(['(', 'list', '1', '2', ')'])).toEqual
+      (['list', 1, 2])
+  })
+
+  it('expression with string', () => {
+    expect(readTokens(['(', 'append', 'hello ', 'world', ')'])).toEqual
+      (['append', 'hello ', 'world'])
   })
 })

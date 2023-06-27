@@ -1,8 +1,4 @@
-import fs from 'fs'
-
 const { log } = console
-
-const file = fs.readFileSync('sample.zk').toString()
 
 enum TokenType {
   // Single char tokens
@@ -28,14 +24,6 @@ type Token = {
   lexeme: string
   literal: any
   line: number
-}
-
-const tokenToString = ({ type, lexeme, literal }: Token): string => {
-  return `${type}, ${lexeme}, ${literal}`
-}
-
-const lexer = (code: string) => {
-  return 0
 }
 
 const scanner = (source: string) => {
@@ -115,6 +103,3 @@ const scanner = (source: string) => {
   tokens.push({ type: TokenType.EOF, lexeme: "", literal: null, line })
   return tokens
 }
-
-log(file)
-log(lexer(file))

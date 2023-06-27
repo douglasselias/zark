@@ -4,6 +4,7 @@ export const readTokens = (tokens: string[]): Expression => {
   const token = tokens.shift()
 
   if (token === '(') {
+    // readList(tokens) // rest
     const list = []
 
     while ([undefined, ')'].notIncludes(tokens[0]))
@@ -16,12 +17,24 @@ export const readTokens = (tokens: string[]): Expression => {
   if (token === ')')
     throw new Error('Unexpected )')
 
-  return atom(token)
+  return readAtom(token)
 }
 
-const atom = (token: string): number | string => {
+const readList = (tokens: string[]) => {
+  const list = []
+
+  for (const token of tokens) {
+    if (!token) throw new Error("Unexpected EOF")
+    if (token === ')') break
+    list.push(readTokens(tokens))
+  }
+
+  return list
+}
+
+const readAtom = (token: string): number | string => {
   if (/\d+/g.test(token)) return parseInt(token)
-  return token.toUpperCase()
+  return token // Symbol?
 }
 
 
