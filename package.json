@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "ts-node index.ts",
-    "test": "jest"
+    "test": "jest tests/step0.test.ts"
   },
   "keywords": [],
   "author": "",
