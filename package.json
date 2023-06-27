@@ -4,7 +4,7 @@
   "description": "Zark: a Lisp dialect implemented in Typescript",
   "scripts": {
     "start": "ts-node index.ts",
-    "test": "jest compiler/token-reader.test.ts"
+    "test": "jest compiler/evaluator.test.ts"
   },
   "dependencies": {
     "ts-node": "^10.9.1",

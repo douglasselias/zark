@@ -1,21 +1,23 @@
-import readline from 'readline'
-const lineReader = readline.createInterface({ input: process.stdin, output: process.stdout })
-const { log } = console
+import { prompt } from './os/line-reader'
 
-import { readString } from './mal/reader'
-import { pr_str } from './mal/printer'
+import { tokenize } from './compiler/tokenizer'
+import { readTokens } from './compiler/token-reader'
 
-const READ = (a: string) => { return readString(a) }
-const EVAL = (a: any) => { return a }
-const PRINT = (a: string) => { return pr_str(a) }
+import { evaluate } from './compiler/evaluator'
 
-const rep = (a: string) => { return PRINT(EVAL(READ(a))) }
+import { printExpression } from './compiler/printer'
 
-export const loop = () => {
-  lineReader.question('zark * ', (answer) => {
-    log(rep(answer))
-    return answer === 'exit' ? null : loop()
-  })
+const { log, clear } = console
+
+const READ = (text: string) => readTokens(tokenize(text))
+const EVAL = (tokens: any) => evaluate(tokens)
+const PRINT = (token: string) => log(printExpression(token))
+
+const REP = (text: string) => {
+  try { PRINT(EVAL(READ(text))) }
+  catch (e) { log(e) }
 }
 
-loop()
+clear()
+log('Zark Lisp - Version 0.0.0-alpha')
+prompt('> ', '(exit)', REP) // change to regex; (  exit  ) will not work

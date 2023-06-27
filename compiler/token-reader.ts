@@ -4,7 +4,6 @@ export const readTokens = (tokens: string[]): Expression => {
   const token = tokens.shift()
 
   if (token === '(') {
-    // readList(tokens) // rest
     const list = []
 
     while ([undefined, ')'].notIncludes(tokens[0]))
@@ -20,26 +19,18 @@ export const readTokens = (tokens: string[]): Expression => {
   return readAtom(token)
 }
 
-const readList = (tokens: string[]) => {
-  const list = []
-
-  for (const token of tokens) {
-    if (!token) throw new Error("Unexpected EOF")
-    if (token === ')') break
-    list.push(readTokens(tokens))
-  }
-
-  return list
-}
-
-const readAtom = (token: string): number | string => {
-  if (/\d+/g.test(token)) return parseInt(token)
-  return token // Symbol?
+const readAtom = (token: string): number | string | boolean | Symbol => {
+  if (/^-?\d+$/.test(token)) return parseInt(token)
+  if (/^-?[0-9]\.[0-9]+$/.test(token)) return parseFloat(token)
+  if (/^"(?:\\.|[^\\"])*"$/.test(token)) return token.slice(1, token.length - 1)
+  if (token === 't') return true
+  if (token === 'nil') return false
+  return Symbol(token)
 }
 
 
 declare global {
-  type Expression = number | string | Expression[]
+  type Expression = number | string | boolean | Symbol | Expression[]
   interface Array<T> {
     notIncludes(value: T): boolean
   }

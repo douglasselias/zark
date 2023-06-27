@@ -1,16 +1,17 @@
 export const evaluate = (expression: Expression, env = defaultEnv) => {
-  if (typeof expression === 'number') return expression
+  if (typeof expression === 'symbol') {
+    const symbolName = symbolToString(expression)
 
-  if (typeof expression === 'string') {
-    const constants: Record<string, number> = { PI: Math.PI, }
-    if (expression in constants) return constants[expression]
-    if (expression in env) return env[expression]
+    const constants: Record<string, number> = { PI: Math.PI, pi: Math.PI }
+    if (symbolName in constants) return constants[symbolName]
+    if (symbolName in env) return env[symbolName]
 
-    // throw new Error(`Unknown name: ${expression}`)
+    throw new Error(`Unknown name: ${symbolName}`)
   }
 
   if (Array.isArray(expression)) {
-    const [procedureName, ...args] = expression as [string, ...any]
+    const [procedureNameSymbol, ...args] = expression as [any, ...any]
+    const procedureName = symbolToString(procedureNameSymbol)
 
     if (procedureName === 'define') {
       const [name, value] = args as [string, any]
@@ -24,9 +25,11 @@ export const evaluate = (expression: Expression, env = defaultEnv) => {
       return procedure(mappedArgs)
     }
 
-    if (procedureName === 'begin') {
-      return args.reduce((acc, curr) => { evaluate(curr, acc); return acc }, env)
-    }
+    throw new Error('Function not found: ' + procedureName)
+
+    // if (procedureName === 'begin') {
+    //   return args.reduce((acc, curr) => { evaluate(curr, acc); return acc }, env)
+    // }
   }
 
   return expression
@@ -35,5 +38,10 @@ export const evaluate = (expression: Expression, env = defaultEnv) => {
 export const defaultEnv: Record<string, Function> = {
   '+': (numbers: number[]) => numbers.reduce((a, b) => a + b),
   '*': (numbers: number[]) => numbers.reduce((a, b) => a * b),
+  '-': (numbers: number[]) => numbers.reduce((a, b) => a - b),
+  '/': (numbers: number[]) => numbers.reduce((a, b) => a / b),
+  'append': (strings: string[]) => strings.reduce((a, b) => a + b),
   // 'define': (name: string, value: any, env: any) => env[name] = value,
 }
+
+const symbolToString = (symbol: Symbol): string => symbol.toString().replace('Symbol(', '').replace(')', '')
