@@ -1,19 +1,21 @@
 import { prompt } from './os/line-reader'
 
-import { tokenize } from './compiler/tokenizer'
-import { readTokens } from './compiler/token-reader'
+import { read as READ } from './compiler/reader'
 
 import { evaluate } from './compiler/evaluator'
+import { createEnv, globalBindings } from './compiler/env'
 
 import { printExpression } from './compiler/printer'
 
 const { log, clear } = console
 
-const READ = (text: string) => readTokens(tokenize(text))
-const EVAL = (tokens: any) => evaluate(tokens)
+const globalEnv = createEnv(globalBindings)
+
+const EVAL = (tokens: any) => evaluate(tokens, globalEnv)
 const PRINT = (token: string) => log(printExpression(token))
 
 const REP = (text: string) => {
+  if (text.trim().length === 0) return
   try { PRINT(EVAL(READ(text))) }
   catch (e) { log(e) }
 }

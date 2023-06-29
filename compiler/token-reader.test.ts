@@ -1,5 +1,5 @@
 import { describe, expect, it } from '@jest/globals'
-import { readTokens } from './token-reader'
+import { readTokens } from './reader'
 
 describe('readTokens', () => {
   it('no tokens', () => {

@@ -1,3 +1,21 @@
+export const read = (text: string) => readTokens(tokenize(text))
+
+export const tokenize = (input: string): string[] => {
+  const regexp = /[\s,]*(~@|[\[\]{}()'`~^@]|"(?:\\.|[^\\"])*"?|;.*|[^\s\[\]{}('"`,;)]*)/g
+  const tokens = []
+
+  while (true) {
+    const matches = regexp.exec(input)
+    if (!matches) break // unreachable code?
+
+    const match = matches[1]
+    if (match === '') break
+    if (match[0] !== ';') tokens.push(match)
+  }
+
+  return tokens
+}
+
 export const readTokens = (tokens: string[]): Expression => {
   if (tokens.length === 0) return []
 
