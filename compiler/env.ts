@@ -5,6 +5,7 @@ export const globalBindings: Env['bindings'] = {
   'divide': (numbers: number[]) => numbers.reduce((a, b) => a / b),
   'append': (strings: string[]) => strings.reduce((a, b) => a + b),
   'is-all-equal?': (booleans: boolean[]) => booleans.every(bool => bool === true),
+  'even?': (value: number) => (value & 1) === 0,
   // 'define': (name: string, value: any, env: any) => env[name] = value,
   '+': (numbers: number[]) => numbers.reduce((a, b) => a + b),
   '*': (numbers: number[]) => numbers.reduce((a, b) => a * b),

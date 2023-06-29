@@ -1,13 +1,25 @@
 import { describe, expect, it } from '@jest/globals'
 import { printExpression } from './printer'
 
-describe('printExpression', () => {
+describe('print', () => {
   it('no tokens', () => {
     expect(printExpression([])).toEqual('()')
   })
 
   it('single atom', () => {
     expect(printExpression(10)).toEqual('10')
+  })
+
+  it('nil', () => {
+    expect(printExpression(null)).toEqual('nil')
+  })
+
+  it('true', () => {
+    expect(printExpression(true)).toEqual('t')
+  })
+
+  it('false', () => {
+    expect(printExpression(false)).toEqual('nil')
   })
 
   it.skip('single atom', () => {
