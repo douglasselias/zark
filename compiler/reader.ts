@@ -34,6 +34,12 @@ export const readTokens = (tokens: string[]): Expression => {
   if (token === ')')
     throw new Error('Unexpected )')
 
+  // if (token === '\'') 
+  // return // quote
+
+  // if (token === '`')
+  // return // quasiquote
+
   return readAtom(token)
 }
 

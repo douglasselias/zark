@@ -57,4 +57,20 @@ describe('evaluate', () => {
     expect(evalWithEnv('(def! a 4)')).toBe(4)
     expect(evalWithEnv('(let* (q (+ 10 a)) a)')).toBe(4)
   })
+
+  it.skip('creates procedure', () => {
+    expect(evalWithEnv('(fn* (a) a)')).toBe('#<function>')
+  })
+
+  it('creates procedure and calls it', () => {
+    expect(evalWithEnv('((fn* (a) a) 7)')).toBe(7)
+  })
+    
+  it('creates procedure and calls it', () => {
+    expect(evalWithEnv('((fn* (a) (+ a 1)) 10)')).toBe(11)
+  })
+
+  it('creates procedure and calls it with two arguments', () => {
+    expect(evalWithEnv('((fn* (a b) (+ a b)) 2 3)')).toBe(5)
+  })
 })

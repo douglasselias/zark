@@ -20,8 +20,8 @@ type Env = {
 }
 
 // should binds have a default value?
-type CreateEnv = (binds: Env['bindings'], outerEnv?: Env) => Env
-export const createEnv: CreateEnv = (binds = {}, outerEnv = null) => {
+type CreateEnv = (binds: Env['bindings'], outerEnv?: Env, exprs?: any[]) => Env
+export const createEnv: CreateEnv = (binds = {}, outerEnv = null, exprs) => {
   return {
     bindings: { ...binds },
     outerEnv,

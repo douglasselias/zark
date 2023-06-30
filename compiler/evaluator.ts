@@ -1,6 +1,11 @@
+import { readFile } from '../os/file-reader'
 import { createEnv, setValueOnCurrentEnv, getValueOnEnv, globalBindings, findEnv } from './env'
+import { read } from './reader'
+
 
 export const evaluate = (expression: Expression, env) => {
+  // console.log('EXP: ', expression)
+
   if (typeof expression === 'symbol') {
     const symbolName = symbolToString(expression)
 
@@ -16,7 +21,21 @@ export const evaluate = (expression: Expression, env) => {
 
   if (Array.isArray(expression) && expression.length > 0) {
     const [procedureNameSymbol, ...args] = expression as [any, ...any]
-    const procedureName = symbolToString(procedureNameSymbol)
+    // console.log('PROC: ', procedureNameSymbol)
+    const procSymbol = Array.isArray(procedureNameSymbol) ? procedureNameSymbol[0] : procedureNameSymbol
+    const procedureName = symbolToString(procSymbol) // it can be anonymous
+
+    if (procedureName === 'quote') {
+      return args[0]
+    }
+
+    if (procedureName === 'load-file') {
+      return evaluate(read(readFile(args[0])), env)
+    }
+
+    if (procedureName === 'eval') {
+      return evaluate(args[0], env)
+    }
 
     if (procedureName === 'def!') {
       const [name, value] = args as [Symbol, any]
@@ -26,32 +45,62 @@ export const evaluate = (expression: Expression, env) => {
 
     if (procedureName === 'let*') {
       const lexicalEnv = createEnv({}, env)
-      console.log('Lexical Env: ', lexicalEnv)
-      console.log('Args:', args)
 
-      const lets = args[0]
-      for (let i = 0; i < lets.length; i += 2) {
-        const key = lets[i], value = lets[i + 1]
+      const [symbols, values] = args
+      for (let i = 0; i < symbols.length; i += 2) {
+        const key = symbols[i], value = symbols[i + 1]
         setValueOnCurrentEnv(lexicalEnv, symbolToString(key), evaluate(value, lexicalEnv))
       }
 
-      return evaluate(args[1], lexicalEnv)
+      return evaluate(values, lexicalEnv)
     }
 
-    const procedure = getValueOnEnv(env, procedureName) // is function?
-    if (procedure) {
-      const mappedArgs: any[] = args.map(arg => evaluate(arg, env))
-      return procedure(mappedArgs)
+    if (procedureName === 'if') {
+      const [predicate, trueExpression, falseExpression] = args
+      if (evaluate(predicate, env))
+        return evaluate(trueExpression, env)
+      return evaluate(falseExpression, env)
     }
 
-    throw new Error('Function not found: ' + procedureName)
+    if (procedureName === 'fn*') {
+      // console.log('ARGS: ', procedureNameSymbol, args, expression)
+      const [_fn_, symbols, body] = Array.isArray(procedureNameSymbol)
+        ? procedureNameSymbol
+        : [null, args, null]
 
-    // if (procedureName === 'begin') {
-    //   return args.reduce((acc, curr) => { evaluate(curr, acc); return acc }, env)
+      const anonFn = ((...binds) => {
+        const lexicalEnv = createEnv({}, env)
+
+        for (let i = 0; i < symbols.length; i++) {
+          const symbol = symbols[i]
+          const value = binds[i]
+          setValueOnCurrentEnv(lexicalEnv, symbolToString(symbol), value)
+        }
+
+        return evaluate(body, lexicalEnv)
+      })
+
+      if (Array.isArray(procedureNameSymbol))
+        return anonFn(...args)
+
+      return anonFn
+    }
+
+    // if (typeof procedureName === 'symbol') {
+    //   // console.log('SYM: ', procedureName)
     // }
+
+    const procedure = getValueOnEnv(env, procedureName)
+    if (procedure)
+      return procedure(args.map(arg => evaluate(arg, env)))
+    throw new Error('Function not found: ' + procedureName)
   }
+
+  // if (typeof expression[0] === 'function') {
+  //   return (expression as any).call(this, ...(expression as any).slice(1))
+  // }
 
   return expression
 }
 
-const symbolToString = (symbol: Symbol): string => symbol.toString().replace('Symbol(', '').replace(')', '')
+const symbolToString = (symbol: Symbol): string => !symbol ? '#<anonymous-function>' : symbol.toString().replace('Symbol(', '').replace(')', '')
