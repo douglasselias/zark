@@ -1,16 +1,15 @@
-;; Função eval - avalia uma expressão Lisp
-(defun eval-zark (exp env)
+(defun eval_ (exp env)
   (cond ((atom exp) (lookup exp env))
         ((atom (car exp))
           (cond ((eq (car exp) 'quote) (cadr exp))
-                ((eq (car exp) 'if) (if (eval-zark (cadr exp) env)
-                                        (eval-zark (caddr exp) env)
-                                        (eval-zark (cadddr exp) env)))
+                ((eq (car exp) 'if) (if (eval_ (cadr exp) env)
+                                        (eval_ (caddr exp) env)
+                                        (eval_ (cadddr exp) env)))
                 ((eq (car exp) 'lambda)
                   (make-function (cadr exp) (caddr exp) env))
-                (t (apply-zark (eval-zark (car exp) env)
+                (t (apply-zark (eval_ (car exp) env)
                        (evlis (cdr exp) env) env))))
-        (t (apply-zark (eval-zark (car exp) env)
+        (t (apply-zark (eval_ (car exp) env)
                (evlis (cdr exp) env) env))))
 
 (defun error-zark (message atom)
@@ -20,7 +19,7 @@
 (defun apply-zark (fn args env)
   (cond ((builtin? fn) (apply-builtin fn args))
         ((function? fn)
-         (eval-zark (function-body fn)
+         (eval_ (function-body fn)
                (extend args (function-environment fn) env)))
         (t (error-zark "Função inválida" fn))))
 
@@ -38,7 +37,7 @@
 
 ;; Função auxiliar evlis - avalia uma lista de expressões Lisp
 (defun evlis (exps env)
-  (mapcar (lambda (exp) (eval-zark exp env)) exps))
+  (mapcar (lambda (exp) (eval_ exp env)) exps))
 
 ;; Função auxiliar lookup - procura o valor associado a um símbolo no ambiente
 (defun lookup (symbol env)
@@ -75,6 +74,6 @@
 ;; Exemplo de uso
 (defparameter *global-env* nil) ; Ambiente global vazio
 
-(eval-zark '(setq x 10) *global-env*) ; Definindo a variável x
+(eval_ '(setq x 10) *global-env*) ; Definindo a variável x
 
-(eval-zark '(+ x 20) *global-env*) ; Avaliando a expressão (+ x 20)
+(eval_ '(+ x 20) *global-env*) ; Avaliando a expressão (+ x 20)
