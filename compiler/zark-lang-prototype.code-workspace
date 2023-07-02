@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"path": "../../mal"
+		}
+	],
+	"settings": {
+		"editor.formatOnType": true,
+		"[lisp]": {
+			"editor.wordSeparators": "`|;:'\",()"
+		}
+	}
+}

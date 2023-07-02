@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "Zark: a Lisp dialect implemented in Typescript",
   "scripts": {
-    "start": "ts-node index.ts",
+    "start": "ts-node compiler/meta-evaluator.ts",
     "test": "jest compiler/evaluator.test.ts"
   },
   "dependencies": {
