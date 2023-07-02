@@ -1,1 +1,0 @@
-("8.9" ta6le ("cce638b752c1281593c39b5d7584b532ab3203fe" . "07aaac769f8cc6f81ae6a5ffbaa01869530b60f4") (collects #"2htdp" #"image.rkt") (collects #"racket" #"main.rkt") (collects #"racket" #"runtime-config.rkt"))

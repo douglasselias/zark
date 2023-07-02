@@ -39,11 +39,12 @@ const extend = (vars: any[], vals: any[], env) => {
 // JS
 const A = (s: string) => Symbol(s)
 const sum = (numbers: number[]) => numbers.reduce((a, b) => a + b)
+const multiply = (numbers: number[]) => numbers.reduce((a, b) => a * b)
 const isNum = (exp) => typeof exp === 'number'
 const symbolToString = (symbol: Symbol): string => symbol.toString().replace('Symbol(', '').replace(')', '')
 
 // Lisp again...
-const builtinEnv = { '+': sum, sum }
+const builtinEnv = { '+': sum, sum, multiply }
 const builtin = (symbol) => builtinEnv[symbol] !== undefined
 const applyBuiltin = (fn, args) => {
 
@@ -66,4 +67,6 @@ const cadddr = (exp: any) => car(cdr(cdr(cdr(exp))))
 
 const globalEnv__ = []
 
-console.log(eval_([A('+'), 10, 20], globalEnv__))
+// console.log(eval_([A('+'), 10, [A('multiply'), 10, 20]], globalEnv__))
+
+console.log(eval_([A('if'), 0, 10, 20], globalEnv__))

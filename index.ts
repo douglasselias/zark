@@ -1,4 +1,4 @@
-import { prompt } from './os/line-reader'
+import { prompt } from "./os/stdin-reader"
 
 import { read as READ } from './compiler/reader'
 
@@ -22,4 +22,4 @@ const REP = (text: string) => {
 
 clear()
 log('Zark Lisp - Version 0.0.0-alpha')
-prompt('> ', '(exit)', REP) // change to regex; (  exit  ) will not work
+prompt('> ', REP)
