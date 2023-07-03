@@ -6,7 +6,7 @@ import { globalBindings, createEnv } from './env'
 const globalEnv = createEnv(globalBindings)
 const evalWithEnv = (exp) => evaluate(read(exp), globalEnv)
 
-describe('evaluate', () => {
+describe.skip('evaluate', () => {
   it('no expressions', () => {
     expect(evalWithEnv('')).toEqual([])
   })

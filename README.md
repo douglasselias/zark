@@ -5,6 +5,7 @@ Zark is a lisp dialect prototype tha aims to rethink common established paradigm
 DISCLAIMER: 
 this is very biased and hindsighthed, since every person has his own bias and this is my first atempt to write a programming language/compiler, so I not very knowledgeble.
 my attempt is to at least write a good® programming language where I can use in the place of JS/TS in my side projects/games
+it also suffers from the "benevolent dictator" since I own this, and everything would need my approval to enter the language, unless you fork it
 
 ## Why create a new language? There are dozens already? It's just [XCDK comic]() all over again
 
@@ -17,7 +18,7 @@ Like Linus, I aim to use this as my main language for creating programs/websites
 will try to document my progress
 
 First, why Lisp? short answer: 
-- macros
+- macros (game dev: macro for input that creates ifs) (how lists make better vector2 and vector3 operations)
 - simple parser/syntax
 - parenthesis (LOL)
 - beating the averages (good selling blog post)
@@ -35,7 +36,11 @@ but with lisp you have _reader macros_ therefore you would need to rewrite stuff
 
 So each tiny part of the Zark language will be a comparison of other languages and be chosen the __Best®__ , this is an approach that I neve saw in any other language.
 
+Will use english language as base for good® code
+
 So I will try outweight the pros against the cons, and also consider long term standards, like ";", should we change it's meaning? almost every programmer will see as ending statements or in lisp as comments, it's in their ~~DNS~~ DNA 
+
+Will look into SICP, abstracting data by operations
 
 I will also look the the 7 UR-languages and compare
 
@@ -51,6 +56,7 @@ Other features that I will analyze:
 - Maybe some seamless interop with those languages mentioned above
 - Provable functions? Dafny
 - compile to LLVM
+- compile to WASM (WASI)
 - possibly some converter from other lisps to Zark
 - low level types? (uint8, int64, etc...)
 - low level functions? (malloc, free) (see also how jai allocates memory)
@@ -65,6 +71,8 @@ Other features that I will analyze:
 - hash tables, dictionaries, structs, etc, std lib support
 - streams, lazy lists
 - lazy evaluation, sometimes bad, (see heisenbug)
+- try/catch/error handling
+- continuation passing style
 
 
 Also:
@@ -79,6 +87,7 @@ Also:
 - maybe have package with a web framework?
 - compile to Android apps
 - some way to interop with python? (make lisp rise again in the Machine Learning community)
+- how package managers handle security, supply chain attacks? (should have a central repo, like npm? like rust does?)
 
 
 Other goal I have in mind is that a programming language should be a abstraction of computation, (SICP)

@@ -21,5 +21,7 @@ const REP = (text: string) => {
 }
 
 clear()
-log('Zark Lisp - Version 0.0.0-alpha')
-prompt('> ', REP)
+log("Zark Lisp - Version 0.0.0-alpha")
+log("Commands:")
+log("exit -> Exit the REPL")
+prompt("> ", REP)
