@@ -67,7 +67,7 @@ const readAtom = (token: string): Token => {
 type Tokenize = (sourceCode: string) => string[]
 // type AST = string[]
 
-type Token = {
+export type Token = {
   type: TokenTypes
   value: number | string
   // lexeme: string
@@ -83,9 +83,9 @@ type TokenTypes =
 const convertTokenToSymbol = () => { }
 const convertTokenToAtom = () => { }
 
+export const read = (text: string) => readTokens(tokenize(text))
 ///////////////////////////////////////// LEGACY
 
-export const read = (text: string) => readTokens(tokenize(text))
 
 // export const _tokenize = (input: string): string[] => {
 //   const regexp = /[\s,]*(~@|[\[\]{}()'`~^@]|"(?:\\.|[^\\"])*"?|;.*|[^\s\[\]{}('"`,;)]*)/g

@@ -15,6 +15,10 @@ But: Inspiration: Linus Lee, John Blow, [please reinvent the wheel](https://geor
 
 Like Linus, I aim to use this as my main language for creating programs/websites, replacing JS and also React.
 
+> Languages should be FLEXIBLE!
+
+https://beautifulracket.com/appendix/why-racket-why-lisp.html
+
 will try to document my progress
 
 First, why Lisp? short answer: 

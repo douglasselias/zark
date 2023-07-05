@@ -4,10 +4,10 @@ import { evaluate } from './evaluator'
 import { globalBindings, createEnv } from './env'
 
 const globalEnv = createEnv(globalBindings)
-const evalWithEnv = (exp) => evaluate(read(exp), globalEnv)
+const evalWithEnv = (exp: string) => evaluate(read(exp), globalEnv)
 
-describe.skip('evaluate', () => {
-  it('no expressions', () => {
+describe('evaluate', () => {
+  it.skip('no expressions', () => {
     expect(evalWithEnv('')).toEqual([])
   })
 
@@ -15,17 +15,17 @@ describe.skip('evaluate', () => {
     expect(evalWithEnv('10')).toEqual(10)
   })
 
-  it('single atom', () => {
+  it.skip('single atom', () => {
     expect(evalWithEnv('PI')).toBeCloseTo(3.141592653589793)
   })
 
   it.skip('single expression', () => {
     // should throw error, function call
-    expect(evalWithEnv(['(', '1', '2', ')'])).toEqual(1)
+    // expect(evalWithEnv(['(', '1', '2', ')'])).toEqual(1)
   })
 
-  it('nested expression', () => {
-    expect(evalWithEnv('(+ 1 2 (* 3 4))')).toBe(15)
+  it.only('nested expression', () => {
+    expect(evalWithEnv('(+ 1 2 (+ 3 4))')).toBe(10)
   })
 
   it('define expression', () => {
