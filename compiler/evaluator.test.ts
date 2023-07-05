@@ -1,10 +1,10 @@
 import { describe, expect, it } from '@jest/globals'
 import { read } from './reader'
-import { evaluate } from './evaluator'
+import { evaluate, builtinEnv } from './evaluator'
 import { globalBindings, createEnv } from './env'
 
 const globalEnv = createEnv(globalBindings)
-const evalWithEnv = (exp: string) => evaluate(read(exp), globalEnv)
+const evalWithEnv = (exp: string) => evaluate(read(exp), builtinEnv)
 
 describe('evaluate', () => {
   it.skip('no expressions', () => {

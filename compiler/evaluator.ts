@@ -2,11 +2,18 @@ import { readFile } from '../os/file-reader'
 import { createEnv, setValueOnCurrentEnv, getValueOnEnv, globalBindings, findEnv } from './env'
 import { Token, read } from './reader'
 
-export const evaluate = (exp:Token| Token[], env) => {
-  const token = Array.isArray(exp) ? exp[0] : exp
+export const evaluate = (exp, env) => {
+  // const token = Array.isArray(exp) ? exp[0] : exp
   console.log('EVAL: EXP: ', exp)
-  if (isNum(token)) return token.value
-  return apply(car(exp), evlis(cdr(exp), env), env)
+  if(isSymbol(exp)) return builtinEnv[exp.value]
+  if (isNum(exp)) return exp.value
+
+  const proc = evaluate(car(exp), env)
+  const args = evalList(cdr(exp), env)
+  console.log('PROC: ', proc)
+  console.log('ARGS: ', args)
+  // return Function.apply(proc, ...args)
+  return proc(args)
 }
 
 const apply = (fn: Token, args: Token[], env) => {
@@ -18,13 +25,15 @@ const apply = (fn: Token, args: Token[], env) => {
 }
 
 const sum = (numbers: number[]) => numbers.reduce((a, b) => a + b)
-const builtinEnv = { '+': sum, sum }
+export const builtinEnv = { '+': sum, sum }
 const builtin = (t: Token) => builtinEnv[t.value] !== undefined
-const applyBuiltin = (fn: Token, args: Token[]) => builtinEnv[fn.value](args.map(token => token.value))
+const applyBuiltin = (fn, args) => builtinEnv[fn](args)
 
-const isNum = (token: Token) => token.type === "number"
+const isSymbol =(exp) => isAtom(exp) &&  exp.type === "symbol"
+const isNum = (token: Token) => isAtom(token) && token.type === "number"
+const isAtom = (token) => !Array.isArray(token)
 
-const evlis = (exps: Token[], env) => exps.map(exp => evaluate(exp, env))
+const evalList = (exps: Token[], env) => exps.map(exp => evaluate(exp, env))
 const car = (exp: any) => exp[0]
 
 const cdr = (exp: any) => exp.slice(1)

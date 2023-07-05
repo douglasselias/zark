@@ -9,7 +9,7 @@ const eval_ = (exp: any, env) => {
       : eval_(cadddr(exp), env)
     if (eq(car(exp), A('lambda')))
       return makeFunction(cadr(exp), caddr(exp), env)
-    return apply(car(exp), evlis(cdr(exp), env), env)
+    // return apply(car(exp), evlis(cdr(exp), env), env)
   }
   return apply(eval_(car(exp), env), evlis(cdr(exp), env), env)
 }
