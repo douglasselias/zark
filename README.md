@@ -7,6 +7,24 @@ this is very biased and hindsighthed, since every person has his own bias and th
 my attempt is to at least write a good® programming language where I can use in the place of JS/TS in my side projects/games
 it also suffers from the "benevolent dictator" since I own this, and everything would need my approval to enter the language, unless you fork it
 
+https://avestura.dev/blog/ideal-programming-language
+https://soc.me/#easy-wins
+
+---
+  // tokenize()
+  // const stringRegex = /^"[\w\s]+"/ 
+
+  // readAtom()
+  // if (/^\d*[a-zA-Z!-]+/.test(token)) // symbolRegex
+
+  export type Token = {
+  type: TokenTypes
+  value: number | string
+  // line: number
+  // column: number
+}
+---
+
 ## Why create a new language? There are dozens already? It's just [XCDK comic]() all over again
 
 Yes, there are dozens already, [Crystal](), [Nim](), [Rust](), espcially Lisp dialects, [Clojure](), [Racket](),[Carp](), [Janet](), [Shen]() etc...
@@ -179,6 +197,10 @@ OS is an abstraction of hardware and process management, probably more things to
 - good C FFI (maybe other languages FFI or compile to other languages)
 - good community modules
 - linter
+- lsp
+- code analyzer
+- cross platform and cross compile
+- self hosted
 
 ## Roadmap
 

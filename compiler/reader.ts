@@ -1,38 +1,31 @@
-const { log } = console
+import { Token } from "./token"
 
-export const tokenize: Tokenize = (code) => {
+export const read = (text: string) => readTokens(tokenize(text))
+
+export const tokenize = (code: string): string[] => {
   const parenthesisRegex = /^[\(\)]/
   const symbolRegex = /^\d*[a-zA-Z!-]+/
   const numberRegex = /^-?\d+/
   const unusedCharacters = /^./
-  // const stringRegex = /^"[\w\s]+"/
 
   const regexes = [
     parenthesisRegex,
     symbolRegex,
     numberRegex,
     unusedCharacters,
-  ]
-  const joinedRegexes = joinRegexes(regexes)
+  ].map(regex => regex.source).join("|")
 
-  const tokens: any[] = []
+  const joinedRegexes = new RegExp(regexes)
+  const tokens: string[] = []
   let remainingCode = code.trimStart()
 
   while (remainingCode.length !== 0) {
-    const result = joinedRegexes.exec(remainingCode)
-    if (result !== null) {
-      const [match] = result
-      tokens.push(match)
-      remainingCode = remainingCode.slice(match.length).trimStart()
-    }
+    const [match] = joinedRegexes.exec(remainingCode)!
+    tokens.push(match)
+    remainingCode = remainingCode.slice(match.length).trimStart()
   }
 
   return tokens
-}
-
-const joinRegexes = (regexes: RegExp[]) => {
-  const pattern = regexes.map(regex => regex.source).join("|")
-  return new RegExp(pattern)
 }
 
 export const readTokens = (tokens: string[]): Token | Token[] => {
@@ -40,13 +33,13 @@ export const readTokens = (tokens: string[]): Token | Token[] => {
 
   const token = tokens.shift()!
 
-  if (token === ')')
-    throw new Error('Unexpected )')
+  if (token === ")")
+    throw new Error("Unexpected )")
 
-  if (token === '(') {
+  if (token === "(") {
     const list: Token[] = []
 
-    while (tokens[0] !== ')')
+    while (tokens[0] !== ")")
       list.push(readTokens(tokens) as any)
 
     tokens.shift()
@@ -57,30 +50,6 @@ export const readTokens = (tokens: string[]): Token | Token[] => {
 }
 
 const readAtom = (token: string): Token => {
-  if (/^-?\d+/.test(token))
-    return { type: "number", value: parseInt(token) }
-  // if (/^\d*[a-zA-Z!-]+/.test(token))
+  if (/^-?\d+/.test(token)) return { type: "number", value: parseInt(token) }
   return { type: "symbol", value: token }
 }
-
-
-type Tokenize = (sourceCode: string) => string[]
-// type AST = string[]
-
-export type Token = {
-  type: TokenTypes
-  value: number | string
-  // lexeme: string
-  // literal: any
-  // line: number
-  // col: number
-}
-
-type TokenTypes =
-  | 'number'
-  | 'symbol'
-
-const convertTokenToSymbol = () => { }
-const convertTokenToAtom = () => { }
-
-export const read = (text: string) => readTokens(tokenize(text))

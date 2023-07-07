@@ -4,7 +4,7 @@
   "description": "Zark: a Lisp dialect implemented in Typescript",
   "scripts": {
     "start": "ts-node --project config index.ts",
-    "test": "jest --watch --config config/jest.config.ts compiler/evaluator.test.ts"
+    "test": "jest --watch --config config/jest.config.ts"
   },
   "dependencies": {
     "ts-node": "^10.9.1",
