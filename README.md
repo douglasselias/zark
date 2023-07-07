@@ -9,7 +9,7 @@ it also suffers from the "benevolent dictator" since I own this, and everything 
 
 ## Why create a new language? There are dozens already? It's just [XCDK comic]() all over again
 
-Yes, there are dozens already, [Crystal](), [Nim](), [Rust](), espcially Lisp dialects, [Clojure](), [Racket](),[Carp]() etc...
+Yes, there are dozens already, [Crystal](), [Nim](), [Rust](), espcially Lisp dialects, [Clojure](), [Racket](),[Carp](), [Janet](), [Shen]() etc...
 
 But: Inspiration: Linus Lee, John Blow, [please reinvent the wheel](https://george3d6.medium.com/please-reinvent-the-wheel-7690ccc454bf)
 
@@ -18,6 +18,12 @@ Like Linus, I aim to use this as my main language for creating programs/websites
 > Languages should be FLEXIBLE!
 
 https://beautifulracket.com/appendix/why-racket-why-lisp.html
+
+http://calculist.org/blog/2012/04/17/homoiconicity-isnt-the-point/
+
+https://qntm.org/clean
+
+https://solid-is-not-solid.com/
 
 will try to document my progress
 
@@ -151,6 +157,46 @@ Why not this other options? TODO LATER!
 ## Why not use Flex/Bison/Antlr?
 
 High level of control of my code, maybe do both and compare performance?
+
+## Core values/goals
+
+- be simple and pragmatic
+- joy of programming
+- least surprise principle
+
+Language is an abstraction of logic and OS functions
+OS is an abstraction of hardware and process management, probably more things too
+
+## Ecosystem
+
+- integrated formatter
+- integrated build config (in zark) and runner/builder
+- test runner/coverage (perf test? mutating tests? others?)
+- Ideally a new code editor - support for vscode/emacs (after that expand to other editor, sorting by most used)
+- debugger/restars/repl driven programming
+- good docs
+- good error messages
+- good C FFI (maybe other languages FFI or compile to other languages)
+- good community modules
+- linter
+
+## Roadmap
+
+- Simple language with `sum` and (integers and symbols) only
+- add `if` support/`booleans`
+- add `quote` support
+- add `macros` support (higyenic macros?)
+- add `assert` (be able to write a zark file and use assert as the test, instead of jest (caveat: will not have a test runner? code coverage))
+- Find answer: what math operations should be in the std?
+- How to handle `modules`? how other languages does this?
+- Numberic tower?
+- add `list/array/vector` support
+- add `string` support
+- add `dictionary/tables` support (alist? plist?)
+- compile to (js c llvm-ir lisps? web-assembly? glsl-spirv?)
+- memory alloc (gc manual owner generational)
+- https://stereobooster.com/posts/make-a-lisp-review/
+- stack/queue (algo (heapsort binary-search)) / trees
 
 
 ## Future

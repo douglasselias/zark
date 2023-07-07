@@ -3,33 +3,18 @@ import { createEnv, setValueOnCurrentEnv, getValueOnEnv, globalBindings, findEnv
 import { Token, read } from './reader'
 
 export const evaluate = (exp, env) => {
-  // const token = Array.isArray(exp) ? exp[0] : exp
-  console.log('EVAL: EXP: ', exp)
-  if(isSymbol(exp)) return builtinEnv[exp.value]
+  if (isSymbol(exp)) return builtinEnv[exp.value]
   if (isNum(exp)) return exp.value
 
   const proc = evaluate(car(exp), env)
   const args = evalList(cdr(exp), env)
-  console.log('PROC: ', proc)
-  console.log('ARGS: ', args)
-  // return Function.apply(proc, ...args)
   return proc(args)
-}
-
-const apply = (fn: Token, args: Token[], env) => {
-  // const _fn = symbolToString(fn)
-  // console.log('FN: ', _fn)
-  if (builtin(fn)) return applyBuiltin(fn, args)
-  // if (function_(_fn)) return eval_(caddr(_fn), extend(args, cadddr(_fn), env))
-  return console.error(`Função inválida ${fn.value}`)
 }
 
 const sum = (numbers: number[]) => numbers.reduce((a, b) => a + b)
 export const builtinEnv = { '+': sum, sum }
-const builtin = (t: Token) => builtinEnv[t.value] !== undefined
-const applyBuiltin = (fn, args) => builtinEnv[fn](args)
 
-const isSymbol =(exp) => isAtom(exp) &&  exp.type === "symbol"
+const isSymbol = (exp) => isAtom(exp) && exp.type === "symbol"
 const isNum = (token: Token) => isAtom(token) && token.type === "number"
 const isAtom = (token) => !Array.isArray(token)
 
