@@ -30,19 +30,29 @@ describe(evaluate.name, () => {
     expect(evalRead("(define x (sum 1 9))")).toBe(10)
   })
 
-  it("define expression and call expression", () => {
+  it("define value and call expression with value", () => {
     evalRead("(define x 3)")
     expect(evalRead("(sum x 7)")).toBe(10)
   })
 
-  it.skip("define expression", () => {
-    expect(evalRead("(def! r 10)")).toBe(10)
+  it("creates procedure and calls it", () => {
+    expect(evalRead("((lambda (a) (sum a 3)) 7)")).toBe(10)
   })
 
-  it.skip("define expression with computation", () => {
-    expect(evalRead("(def! y (+ 1 7))")).toBe(8)
-    expect(evalRead("y")).toBe(8)
+  it("creates procedure and calls it with expression", () => {
+    expect(evalRead("((lambda (a) (sum a 3)) (sum 5 2))")).toBe(10)
   })
+
+  it("defines procedure and call later with value", () => {
+    evalRead("(define sum-one (lambda (n) (sum n 1)))")
+    expect(evalRead("(sum-one 9)")).toBe(10)
+  })
+
+  it("defines procedure and call later with value 2", () => {
+    evalRead("(define 1+ (lambda (n) (sum n 1)))")
+    expect(evalRead("(1+ 9)")).toBe(10)
+  })
+
 
   it.skip("define lexical scope", () => {
     expect(evalRead("(let* (z 9) z)")).toBe(9)

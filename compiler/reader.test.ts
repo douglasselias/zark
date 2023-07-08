@@ -48,11 +48,25 @@ describe(tokenize.name, () => {
       "(", "list", "10", "20", ")"
     ])
   })
+
+  it("define lambda", () => {
+    const exp = "(define 1+ (lambda (n) (sum n 1)))"
+    expect(tokenize(exp)).toEqual([
+      "(", "define", "1+", "(", "lambda", "(", "n", ")",
+      "(", "sum", "n", "1", ")", ")", ")"
+    ])
+  })
 })
 
 describe(readTokens.name, () => {
   it("no tokens", () => {
     expect(readTokens([])).toEqual([])
+  })
+
+  it.skip("define lambda", () => {
+    const exp = "(define 1+ (lambda (n) (sum n 1)))"
+    const tokens = tokenize(exp)
+    expect(readTokens(tokens)).toEqual([])
   })
 
   it("single number", () => {

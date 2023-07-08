@@ -14,11 +14,16 @@ export const evaluate = (exp: Expression, env = defaultEnv) => {
     return env[name.value]
   }
 
-  // if (car(exp) === "lambda") {
-  //   const lambda = (params, body, lexEnv) => (args) => { }
-  //   return lambda(cadr(exp), caddr(exp), env)
-  // }
-    // return (...cdr(exp)) => { }
+  if (formName === "lambda") {
+    const [params, body] = cdr(exp)
+    const lambda = (lexParams, lexBody, lexEnv) => (lexArgs) => {
+      return evaluate(lexBody, createEnv(
+        lexParams.map(p => p.value),
+        lexArgs.map(a => a),
+        lexEnv))
+    }
+    return lambda(params, body, env)
+  }
 
   const proc = evaluate(car(exp), env)
   const args = evalList(cdr(exp), env)

@@ -4,7 +4,7 @@ export const read = (text: string) => readTokens(tokenize(text))
 
 export const tokenize = (code: string): string[] => {
   const parenthesisRegex = /^[\(\)]/
-  const symbolRegex = /^\d*[a-zA-Z\-!?]+/
+  const symbolRegex = /^\d*[a-zA-Z\-!?+]+/
   const numberRegex = /^-?\d+/
   const unusedCharacters = /^./
 
@@ -50,6 +50,6 @@ export const readTokens = (tokens: string[]): Token | Token[] => {
 }
 
 const readAtom = (token: string): Token => {
-  if (/^-?\d+/.test(token)) return { type: "number", value: parseInt(token) }
+  if (/^-?\d+$/.test(token)) return { type: "number", value: parseInt(token) }
   return { type: "symbol", value: token }
 }
