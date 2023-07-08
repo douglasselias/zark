@@ -7,6 +7,19 @@ export const evaluate = (exp: Expression, env = defaultEnv) => {
   if (isSymbol(exp)) return findValue(env, (exp as Token).value as string)
   if (isNum(exp)) return (exp as Token).value
 
+  const formName = car(exp).value
+  if (formName === "define") {
+    const [name, subExp] = cdr(exp)
+    env[name.value] = evaluate(subExp, env)
+    return env[name.value]
+  }
+
+  // if (car(exp) === "lambda") {
+  //   const lambda = (params, body, lexEnv) => (args) => { }
+  //   return lambda(cadr(exp), caddr(exp), env)
+  // }
+    // return (...cdr(exp)) => { }
+
   const proc = evaluate(car(exp), env)
   const args = evalList(cdr(exp), env)
   return proc(args)
@@ -17,5 +30,8 @@ const isNum = (exp: Expression) => isAtom(exp) && (exp as Token).type === "numbe
 const isAtom = (exp: Expression) => !Array.isArray(exp)
 
 const evalList = (exps: Expression[], env: Env) => exps.map(exp => evaluate(exp, env))
-const car = (exp: Expression) => exp[0]
+const car = (exp: Expression): Token => exp[0]
 const cdr = (exp: Expression) => (exp as Token[]).slice(1)
+const cadr = (exp: Expression) => car(cdr(exp))
+const caddr = (exp: Expression) => car(cdr(cdr(exp)))
+const cadddr = (exp: Expression) => car(cdr(cdr(cdr(exp))))

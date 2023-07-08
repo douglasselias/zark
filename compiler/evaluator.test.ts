@@ -18,8 +18,21 @@ describe(evaluate.name, () => {
     expect(() => evalRead("(1 2)")).toThrow()
   })
 
-  it.only("nested expression", () => {
+  it("nested expression", () => {
     expect(evalRead("(+ 1 2 (+ 3 4))")).toBe(10)
+  })
+
+  it("define expression", () => {
+    expect(evalRead("(define x 10)")).toBe(10)
+  })
+
+  it("define expression with sub-expression", () => {
+    expect(evalRead("(define x (sum 1 9))")).toBe(10)
+  })
+
+  it("define expression and call expression", () => {
+    evalRead("(define x 3)")
+    expect(evalRead("(sum x 7)")).toBe(10)
   })
 
   it.skip("define expression", () => {
