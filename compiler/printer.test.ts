@@ -7,12 +7,12 @@ describe(printExpression.name, () => {
     // expect(printExpression(null)).toEqual("nil")
   })
 
-  it.skip("true", () => {
-    // expect(printExpression(true)).toEqual("t")
+  it("true", () => {
+    expect(printExpression(true)).toEqual("true")
   })
 
-  it.skip("false", () => {
-    // expect(printExpression(false)).toEqual("nil")
+  it("false", () => {
+    expect(printExpression(false)).toEqual("false")
   })
 
   it("single number", () => {

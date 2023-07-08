@@ -1,0 +1,1 @@
+(define plus10 (lambda (x) (sum 10 x)))

@@ -10,6 +10,18 @@ it also suffers from the "benevolent dictator" since I own this, and everything 
 https://avestura.dev/blog/ideal-programming-language
 https://soc.me/#easy-wins
 
+https://github.com/nukata/lisp-in-typescript/blob/master/lisp.ts#L1211
+
+https://jai.community/t/overview-of-jai/128
+
+https://www.roc-lang.org/
+
+https://news.ycombinator.com/item?id=30222132
+
+---
+Game idea: chess but to go to initial position
+pkmn prog langs game - in my personal blog
+world builder 3
 ---
   // tokenize()
   // const stringRegex = /^"[\w\s]+"/ 
