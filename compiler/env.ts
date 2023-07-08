@@ -1,3 +1,5 @@
+// import { readFile } from "../os/file-reader"
+
 const sum = (numbers: number[]) => numbers.reduce((a, b) => a + b)
 const even = (value: number) => (value & 1) === 0
 
@@ -9,6 +11,7 @@ export const builtinEnv = {
   even,
   anon: (a) => { return a + 1 },
   eq: (v: any[]) => v[0] === v[1],
+  // "load-file":(a:any[])=> readFile(a[0])
 }
 for (const propertyName of mathProperties) {
   builtinEnv[propertyName] = Math[propertyName]

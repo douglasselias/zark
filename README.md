@@ -18,6 +18,10 @@ https://www.roc-lang.org/
 
 https://news.ycombinator.com/item?id=30222132
 
+https://bernsteinbear.com/blog/lisp/12_metacircular/
+
+https://bernsteinbear.com/blog/compiling-a-lisp-0/
+
 ---
 Game idea: chess but to go to initial position
 pkmn prog langs game - in my personal blog

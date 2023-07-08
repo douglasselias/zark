@@ -45,6 +45,20 @@ export const evaluate = (exp: Expression, env = defaultEnv) => {
     else throw new Error("error set: Variable not found")
   }
 
+  // https://stackoverflow.com/questions/3482389/how-many-primitives-does-it-take-to-build-a-lisp-machine-ten-seven-or-five/3484206#3484206
+// atom? - 
+// eq - done?
+// car -
+// cdr - 
+// cons/pair – done
+// quote – done?
+// cond/if – done
+// lambda – done
+// label/define – done
+  
+  // let - 
+  // letrec -
+
   const proc = evaluate(car(exp), env)
   const args = evalList(cdr(exp), env)
   return proc(args)

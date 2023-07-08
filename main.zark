@@ -1,1 +1,12 @@
 (define plus10 (lambda (x) (sum 10 x)))
+
+; Mutually recursive functions
+(define f (x)
+  (if (< x 2)
+      1
+      (g (- x 1))))
+
+(define g (x)
+  (if (< x 2)
+      3
+      (f (- x 2))))

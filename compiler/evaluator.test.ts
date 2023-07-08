@@ -81,6 +81,11 @@ describe(evaluate.name, () => {
     expect(evalRead("z")).toEqual(20)
   })
 
+  it("call set procedure and throws error", () => {
+    evalRead("(define z 10)")
+    expect(() => evalRead("(set y 20)")).toThrow()
+  })
+
   it.failing("call quote procedure", () => {
     expect(evalRead("(quote (sum 1 2))")).toEqual([
       {
