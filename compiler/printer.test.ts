@@ -1,62 +1,32 @@
-import { describe, expect, it } from '@jest/globals'
-import { printExpression } from './printer'
+import { describe, expect, it } from "@jest/globals"
+import { printExpression } from "./printer"
+import { createNumberToken, createSymbolToken } from "./token"
 
-describe.skip('print', () => {
-  it('no tokens', () => {
-    expect(printExpression([])).toEqual('()')
+describe(printExpression.name, () => {
+  it.skip("nil", () => {
+    // expect(printExpression(null)).toEqual("nil")
   })
 
-  it('single atom', () => {
-    expect(printExpression(10)).toEqual('10')
+  it.skip("true", () => {
+    // expect(printExpression(true)).toEqual("t")
   })
 
-  it('nil', () => {
-    expect(printExpression(null)).toEqual('nil')
+  it.skip("false", () => {
+    // expect(printExpression(false)).toEqual("nil")
   })
 
-  it('true', () => {
-    expect(printExpression(true)).toEqual('t')
+  it("single number", () => {
+    expect(printExpression(createNumberToken(10))).toEqual("10")
   })
 
-  it('false', () => {
-    expect(printExpression(false)).toEqual('nil')
+  it("single symbol", () => {
+    expect(printExpression(createSymbolToken("pi"))).toEqual("pi")
   })
 
-  it.skip('single atom', () => {
-    expect(printExpression('pi')).toEqual('PI')
-  })
-
-  it('single atom/symbol', () => {
-    expect(printExpression(Symbol('pi'))).toEqual('Symbol(pi)')
-  })
-
-  it.skip('multiple atoms', () => {
-    expect(printExpression(['10', 'pi'])).toEqual([10, 'PI'])
-  })
-
-  it.skip('single empty expression', () => {
-    expect(printExpression(['(', ')'])).toEqual([])
-  })
-
-  it.skip('single parenthesis', () => {
-    expect(printExpression(['('])).toEqual('()')
-  })
-
-  it.skip('single right parenthesis', () => {
-    expect(() => printExpression([')'])).toThrowError()
-  })
-
-  it('single expression', () => {
-    expect(printExpression(['+', '1','2'])).toEqual('(+ 1 2)')
-  })
-
-  it.skip('nested expression', () => {
-    expect(printExpression(['(', '+', '1', '2',
-      '(', '*', '3', '4', ')', ')'])).toEqual(['+', 1, 2, ['*', 3, 4]])
-  })
-
-  it.skip('nested expression', () => {
-    expect(printExpression(['(', 'sum', '1', '2',
-      '(', 'prod', '3', '4', ')', ')'])).toEqual(['SUM', 1, 2, ['PROD', 3, 4]])
+  it("nested expression", () => {
+    expect(printExpression(
+      [createSymbolToken("sum"), createNumberToken(1), createNumberToken(2),
+      [createSymbolToken("*"), createNumberToken(3), createNumberToken(4)]]
+    )).toEqual("(sum 1 2 (* 3 4))")
   })
 })

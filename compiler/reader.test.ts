@@ -1,5 +1,6 @@
 import { describe, expect, it } from "@jest/globals"
 import { tokenize, readTokens } from "./reader"
+import { createNumberToken, createSymbolToken } from "./token"
 
 describe(tokenize.name, () => {
   it("single number", () => {
@@ -75,7 +76,3 @@ describe(readTokens.name, () => {
       ])
   })
 })
-
-const createToken = (type: string) => (value: string | number) => ({ type, value })
-const createSymbolToken = createToken("symbol")
-const createNumberToken = createToken("number")

@@ -1,9 +1,7 @@
-import { createEnv, setValueOnCurrentEnv, getValueOnEnv, globalBindings, findEnv } from "./env"
-import { Token} from "./token"
-import {  read } from "./reader"
+// import { createEnv, setValueOnCurrentEnv, getValueOnEnv, globalBindings, findEnv } from "./env"
+import { Expression, Token} from "./token"
 
-
-export const evaluate = (exp, env) => {
+export const evaluate = (exp: Expression, env) => {
   if (isSymbol(exp)) return builtinEnv[exp.value]
   if (isNum(exp)) return exp.value
 
@@ -15,9 +13,9 @@ export const evaluate = (exp, env) => {
 const sum = (numbers: number[]) => numbers.reduce((a, b) => a + b)
 export const builtinEnv = { '+': sum, sum }
 
-const isSymbol = (exp) => isAtom(exp) && exp.type === "symbol"
+const isSymbol = (exp: Expression) => isAtom(exp) && exp.type === "symbol"
 const isNum = (token: Token) => isAtom(token) && token.type === "number"
-const isAtom = (token) => !Array.isArray(token)
+const isAtom = (exp: Expression) => !Array.isArray(exp)
 
 const evalList = (exps: Token[], env) => exps.map(exp => evaluate(exp, env))
 const car = (exp: any) => exp[0]
