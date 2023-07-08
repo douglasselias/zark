@@ -16,17 +16,22 @@ describe(printExpression.name, () => {
   })
 
   it("single number", () => {
-    expect(printExpression(createNumberToken(10))).toEqual("10")
+    expect(printExpression(10)).toEqual("10")
   })
 
   it("single symbol", () => {
-    expect(printExpression(createSymbolToken("pi"))).toEqual("pi")
+    expect(printExpression("pi")).toEqual("pi")
+  })
+
+  it("single procedure sum", () => {
+    const sum = () => { }
+    expect(printExpression(sum)).toEqual(`#<procedure(${sum.name})>`)
   })
 
   it("nested expression", () => {
     expect(printExpression(
-      [createSymbolToken("sum"), createNumberToken(1), createNumberToken(2),
-      [createSymbolToken("*"), createNumberToken(3), createNumberToken(4)]]
+      ["sum", 1, 2,
+        ["*", 3, 4]]
     )).toEqual("(sum 1 2 (* 3 4))")
   })
 })

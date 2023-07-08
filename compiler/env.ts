@@ -1,76 +1,28 @@
 const sum = (numbers: number[]) => numbers.reduce((a, b) => a + b)
+const even = (value: number) => (value & 1) === 0
 
 export const builtinEnv = {
-  "+": sum, sum
+  "+": sum, sum,
+  "even?": (value: number) => (value & 1) === 0,
+  even,
 }
 
-const createEnv = (dict) => {
-
+export type Env = {
+  [key: string]: any
+  outer: Env | null
 }
 
-const findEnv = () => { }
+export const createEnv = (parms: string[] = [], args: any[] = [], outer: Env | null = null): Env => {
+  const env: Env = { outer }
+  // env.outer = outer // user can override!!!
+  parms.forEach((param, index) => {
+    env[param] = args[index]
+  })
+  return env
+}
 
-
-
-
-
-
-
-
-///////////////// -------------- LEGACY --------- /////////////////////////
-
-
-// export const globalBindings: Env['bindings'] = {
-//   'sum': (numbers: number[]) => numbers.reduce((a, b) => a + b),
-//   'multiply': (numbers: number[]) => numbers.reduce((a, b) => a * b),
-//   'subtract': (numbers: number[]) => numbers.reduce((a, b) => a - b),
-//   'divide': (numbers: number[]) => numbers.reduce((a, b) => a / b),
-//   'append': (strings: string[]) => strings.reduce((a, b) => a + b),
-//   'is-all-equal?': (booleans: boolean[]) => booleans.every(bool => bool === true),
-//   'even?': (value: number) => (value & 1) === 0,
-//   // 'define': (name: string, value: any, env: any) => env[name] = value,
-//   '+': (numbers: number[]) => numbers.reduce((a, b) => a + b),
-//   '*': (numbers: number[]) => numbers.reduce((a, b) => a * b),
-//   '-': (numbers: number[]) => numbers.reduce((a, b) => a - b),
-//   '/': (numbers: number[]) => numbers.reduce((a, b) => a / b),
-//   '===': (booleans: boolean[]) => booleans.every(bool => bool === true),
-// }
-
-// type Env = {
-//   bindings: Record<string, any>
-//   outerEnv: Env | null
-// }
-
-// should binds have a default value?
-// type CreateEnv = (binds: Env['bindings'], outerEnv?: Env, exprs?: any[]) => Env
-// export const createEnv: CreateEnv = (binds = {}, outerEnv = null, exprs) => {
-//   return {
-//     bindings: { ...binds },
-//     outerEnv,
-//   }
-// }
-
-// type SetValueOnCurrentEnv = (env: Env, key: string, value: any) => any
-// export const setValueOnCurrentEnv: SetValueOnCurrentEnv = (env, key, value) => {
-//   env.bindings[key] = value
-//   return value
-// }
-
-// type FindEnv = (env: Env, key: string) => Env | null
-// export const findEnv: FindEnv = (env, key) => {
-//   if (env && key in env.bindings) return env
-//   if (env && env.outerEnv) return findEnv(env.outerEnv, key)
-
-//   return null
-// }
-
-// type GetValueOnEnv = (env: Env, key: string) => any
-// export const getValueOnEnv: GetValueOnEnv = (env: Env, key) => {
-//   const envWithData = findEnv(env, key)
-//   if (!envWithData) throw new Error(`'${key}' not found`)
-
-//   const value = envWithData.bindings[key]
-//   if (!value) throw new Error(`'${key}' not found`)
-
-//   return value
-// }
+export const findValue = (env: Env, varName: string): Env | null => {
+  if (varName in env) return env[varName]
+  if (env.outer) return findValue(env.outer, varName)
+  return null
+}

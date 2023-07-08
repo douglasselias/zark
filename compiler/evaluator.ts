@@ -1,8 +1,10 @@
-// import { createEnv, setValueOnCurrentEnv, getValueOnEnv, globalBindings, findEnv } from "./env"
-import { Expression, Token} from "./token"
+import { createEnv, findValue, Env, builtinEnv } from "./env"
+import { Expression, Token } from "./token"
 
-export const evaluate = (exp: Expression, env) => {
-  if (isSymbol(exp)) return builtinEnv[(exp as Token).value]
+const defaultEnv = createEnv(Object.keys(builtinEnv), Object.values(builtinEnv))
+
+export const evaluate = (exp: Expression, env = defaultEnv) => {
+  if (isSymbol(exp)) return findValue(env, (exp as Token).value as string)
   if (isNum(exp)) return (exp as Token).value
 
   const proc = evaluate(car(exp), env)
@@ -14,6 +16,6 @@ const isSymbol = (exp: Expression) => isAtom(exp) && (exp as Token).type === "sy
 const isNum = (exp: Expression) => isAtom(exp) && (exp as Token).type === "number"
 const isAtom = (exp: Expression) => !Array.isArray(exp)
 
-const evalList = (exps: Token[], env) => exps.map(exp => evaluate(exp, env))
-const car = (exp: any) => exp[0]
-const cdr = (exp: any) => exp.slice(1)
+const evalList = (exps: Expression[], env: Env) => exps.map(exp => evaluate(exp, env))
+const car = (exp: Expression) => exp[0]
+const cdr = (exp: Expression) => (exp as Token[]).slice(1)

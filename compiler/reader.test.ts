@@ -28,6 +28,10 @@ describe(tokenize.name, () => {
     expect(tokenize(exp)).toEqual(exp.split(""))
   })
 
+  it("single symbol with special characer", () => {
+    expect(tokenize("even?")).toEqual(["even?"])
+  })
+
   it("single expression", () => {
     expect(tokenize("(sum 1 2)")).toEqual(["(", "sum", "1", "2", ")"])
   })

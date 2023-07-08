@@ -1,22 +1,14 @@
 import { prompt } from "./os/stdin-reader"
 
 import { read } from "./compiler/reader"
-
-import { evaluate } from './compiler/evaluator'
-import { createEnv, globalBindings } from './compiler/env'
-
-import { printExpression } from './compiler/printer'
+import { evaluate } from "./compiler/evaluator"
+import { print } from "./compiler/printer"
 
 const { log, clear } = console
 
-const globalEnv = createEnv(globalBindings)
-
-const EVAL = (tokens: any) => evaluate(tokens, globalEnv)
-const PRINT = (token: string) => log(printExpression(token))
-
 const REP = (text: string) => {
   if (text.trim().length === 0) return
-  try { PRINT(EVAL(read(text))) }
+  try { print(evaluate(read(text))) }
   catch (e) { log(e) }
 }
 
