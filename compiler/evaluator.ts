@@ -2,22 +2,18 @@
 import { Expression, Token} from "./token"
 
 export const evaluate = (exp: Expression, env) => {
-  if (isSymbol(exp)) return builtinEnv[exp.value]
-  if (isNum(exp)) return exp.value
+  if (isSymbol(exp)) return builtinEnv[(exp as Token).value]
+  if (isNum(exp)) return (exp as Token).value
 
   const proc = evaluate(car(exp), env)
   const args = evalList(cdr(exp), env)
   return proc(args)
 }
 
-const sum = (numbers: number[]) => numbers.reduce((a, b) => a + b)
-export const builtinEnv = { '+': sum, sum }
-
-const isSymbol = (exp: Expression) => isAtom(exp) && exp.type === "symbol"
-const isNum = (token: Token) => isAtom(token) && token.type === "number"
+const isSymbol = (exp: Expression) => isAtom(exp) && (exp as Token).type === "symbol"
+const isNum = (exp: Expression) => isAtom(exp) && (exp as Token).type === "number"
 const isAtom = (exp: Expression) => !Array.isArray(exp)
 
 const evalList = (exps: Token[], env) => exps.map(exp => evaluate(exp, env))
 const car = (exp: any) => exp[0]
-
 const cdr = (exp: any) => exp.slice(1)

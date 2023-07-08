@@ -64,9 +64,3 @@ const cdr = (exp: any) => exp.slice(1)
 const cadr = (exp: any) => car(cdr(exp))
 const caddr = (exp: any) => car(cdr(cdr(exp)))
 const cadddr = (exp: any) => car(cdr(cdr(cdr(exp))))
-
-const globalEnv__ = []
-
-// console.log(eval_([A('+'), 10, [A('multiply'), 10, 20]], globalEnv__))
-
-console.log(eval_([A('if'), 0, 10, 20], globalEnv__))
