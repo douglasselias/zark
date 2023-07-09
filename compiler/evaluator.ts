@@ -32,7 +32,11 @@ export const evaluate = (exp: Expression, env = defaultEnv) => {
   }
 
   if (formName === "quote") {
-    return cadr(exp).value // doenst work on lists/exp
+    const e = cadr(exp)
+    if (Array.isArray(e)) { // TODO: seems like a hack...
+      return "(" + e.map((t: Token) => String(t.value)).join(" ") + ")"
+    }
+    return e.value
   }
 
   if (formName === "set") {
@@ -46,16 +50,16 @@ export const evaluate = (exp: Expression, env = defaultEnv) => {
   }
 
   // https://stackoverflow.com/questions/3482389/how-many-primitives-does-it-take-to-build-a-lisp-machine-ten-seven-or-five/3484206#3484206
-// atom? - 
-// eq - done?
-// car -
-// cdr - 
-// cons/pair – done
-// quote – done?
-// cond/if – done
-// lambda – done
-// label/define – done
-  
+  // atom? - 
+  // eq - done?
+  // car -
+  // cdr - 
+  // cons/pair – done?
+  // quote – done?
+  // cond/if – done
+  // lambda – done
+  // label/define – done
+
   // let - 
   // letrec -
 

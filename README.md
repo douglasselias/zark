@@ -7,6 +7,32 @@ this is very biased and hindsighthed, since every person has his own bias and th
 my attempt is to at least write a good® programming language where I can use in the place of JS/TS in my side projects/games
 it also suffers from the "benevolent dictator" since I own this, and everything would need my approval to enter the language, unless you fork it
 
+https://www.wikiwand.com/en/Shuhari
+http://rigaux.org/language-study/syntax-across-languages/
+
+---
+
+Compiler optimizations:
+
+- Constant folding: convert multiple expression/constant into one constant
+- Strength reduction: convert a expensive operation into a less expensive operation, generally related to math operations
+- Loop unrolling: needs a unrolling factor (step), to loop by this step instead of iterating one by one (some cases may generate slower code, some compilers(languages?) provide a option to unroll) 
+- Code hoisting: move a constant operation outside of the loop
+- Function inlining: replace procedure call with the body of the procedure (some languages provide a option to inline, like C/C++)
+- Dead code elimination: remove unused code
+
+---
+
+Languages to test:
+
+- https://www.idris-lang.org/
+- https://github.com/ValeLang/Vale
+- https://github.com/dafny-lang/dafny
+- https://koka-lang.github.io/koka/doc/book.html#why-mingen
+
+
+---
+
 https://avestura.dev/blog/ideal-programming-language
 https://soc.me/#easy-wins
 
@@ -22,10 +48,20 @@ https://bernsteinbear.com/blog/lisp/12_metacircular/
 
 https://bernsteinbear.com/blog/compiling-a-lisp-0/
 
+https://www.mcmillen.dev/language_checklist.html
+
+https://www.kimsereylam.com/racket/2019/05/23/metacircular-evaluator-in-lisp.html
+
+https://www.wikiwand.com/en/Lexical_analysis#Token
+
 ---
+
 Game idea: chess but to go to initial position
 pkmn prog langs game - in my personal blog
 world builder 3
+
+https://floooh.github.io/2018/06/17/handles-vs-pointers.html
+
 ---
   // tokenize()
   // const stringRegex = /^"[\w\s]+"/ 
