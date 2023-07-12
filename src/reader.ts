@@ -3,13 +3,13 @@ import { Token } from "./token"
 export const read = (text: string) => readTokens(tokenize(text))
 
 export const tokenize = (code: string): string[] => {
-  const parenthesisRegex = /^[\(\)]/
+  const parenthesesRegex = /^[\(\)]/
   const symbolRegex = /^\d*[a-zA-Z\-!?+]+/
   const numberRegex = /^-?\d+/
   const unusedCharacters = /^./
 
   const regexes = [
-    parenthesisRegex,
+    parenthesesRegex,
     symbolRegex,
     numberRegex,
     unusedCharacters,

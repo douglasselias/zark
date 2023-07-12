@@ -7,6 +7,10 @@ this is very biased and hindsighthed, since every person has his own bias and th
 my attempt is to at least write a good® programming language where I can use in the place of JS/TS in my side projects/games
 it also suffers from the "benevolent dictator" since I own this, and everything would need my approval to enter the language, unless you fork it
 
+SHOULD HAVE AUTOMATIC NAMED PARAMETERS!!!
+
+maybe change regex to parser combinator? need to profile regex and parser combinator
+
 https://www.wikiwand.com/en/Shuhari
 http://rigaux.org/language-study/syntax-across-languages/
 

@@ -1,13 +1,5 @@
-################ Scheme Interpreter in Python
-
-## (c) Peter Norvig, 2010; See http://norvig.com/lispy2.html
-
-################ Symbol, Procedure, classes
-
 from __future__ import division
 import re, sys, StringIO
-
-class Symbol(str): pass
 
 def Sym(s, symbol_table={}):
     "Find or create unique Symbol entry for str s in symbol table."

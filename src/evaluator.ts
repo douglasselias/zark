@@ -46,19 +46,52 @@ export const evaluate = (exp: Expression, env = defaultEnv) => {
       envFound[name.value as string] = evaluate(subExp, env)
       return envFound[name.value as string]
     }
-    else throw new Error("error set: Variable not found")
+    else throw new Error("Error (procedure SET): Symbol not found")
+  }
+
+  if (formName === "atom?") {
+    const [subExp] = cdr(exp)
+
+    if (!Array.isArray(subExp)) {
+      if (subExp.type === "symbol") {
+        const envFound = findEnv(env, subExp.value as string)
+        return envFound ? true : false
+      }
+
+      if (subExp.type === "number") return true
+    }
+    return false
+  }
+
+  if (formName === "car") {
+    const [subExp] = cdr(exp)
+    return car(subExp)
+  }
+
+  if (formName === "cdr") {
+    const [subExp] = cdr(exp)
+    return "(" + (subExp as any).map((t: Token) => String(t.value)).join(" ") + ")" // hack!!!
+  }
+
+  if (formName === "list") {
+    const [...listParams] = cdr(exp)
+    return listParams.map(t => t.value)
+  }
+
+  if (formName === "eval") {
+    const [subExp] = cdr(exp)
+    return evaluate(subExp, env)
+  }
+
+  if (formName === "cons") {
+    const [a, b] = cdr(exp)
+    // return "(" + [a, b].map(t => t.value).join(" . ") + ")" // HACK!!!!
+    return [a, b]
   }
 
   // https://stackoverflow.com/questions/3482389/how-many-primitives-does-it-take-to-build-a-lisp-machine-ten-seven-or-five/3484206#3484206
-  // atom? - 
-  // eq - done?
-  // car -
-  // cdr - 
   // cons/pair – done?
-  // quote – done?
   // cond/if – done
-  // lambda – done
-  // label/define – done
 
   // let - 
   // letrec -
