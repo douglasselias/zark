@@ -1,15 +1,15 @@
 import { prompt } from "./os/stdin-reader"
 
-import { read } from "./compiler/reader"
-import { evaluate } from "./compiler/evaluator"
-import { print } from "./compiler/printer"
+import { read } from "./src/reader"
+import { evaluate } from "./src/evaluator"
+import { print } from "./src/printer"
 
 const { log, clear } = console
 
 const REP = (text: string) => {
   if (text.trim().length === 0) return
   try { print(evaluate(read(text))) }
-  catch (e) { log(e) }
+  catch (e) { log(e.message) }
 }
 
 clear()

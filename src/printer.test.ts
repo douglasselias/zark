@@ -1,12 +1,11 @@
 import { describe, expect, it } from "@jest/globals"
-import { printExpression } from "./printer"
-import { createNumberToken, createSymbolToken } from "./token"
+import {  print,printExpression } from "./printer"
+
+describe(print.name, () => {
+  expect(print(true)).toEqual(undefined)
+})
 
 describe(printExpression.name, () => {
-  it.skip("nil", () => {
-    // expect(printExpression(null)).toEqual("nil")
-  })
-
   it("true", () => {
     expect(printExpression(true)).toEqual("true")
   })

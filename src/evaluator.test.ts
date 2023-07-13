@@ -5,25 +5,21 @@ import { evaluate } from "./evaluator"
 const evalRead = (exp: string) => evaluate(read(exp))
 
 describe(evaluate.name, () => {
-  it("single number", () => {
-    expect(evalRead("10")).toEqual(10)
+  describe("atoms", () => {
+    it("single number: 10", () => {
+      expect(evalRead("10")).toEqual(10)
+    })
+
+    it("single symbol: PI", () => {
+      expect(evalRead("PI")).toEqual(3.141592653589793)
+    })
   })
 
-  it("single symbol", () => {
-    // expect(evalRead("PI")).toBeCloseTo(3.141592653589793)
-    expect(evalRead("PI")).toEqual(3.141592653589793)
-  })
-
-  it("single symbol quote", () => {
+  it("(quote PI)", () => {
     expect(evalRead("(quote PI)")).toEqual("PI")
   })
 
-  // it.only("single symbol quote", () => {
-  //   expect(evalRead("(eval (quote PI))")).toEqual("PI")
-  // })
-
-  it.skip("single expression", () => {
-    // should throw error, function call
+  it("single expression", () => {
     expect(() => evalRead("(1 2)")).toThrow()
   })
 
@@ -64,6 +60,67 @@ describe(evaluate.name, () => {
 
   it("call if expression", () => {
     expect(evalRead("(if (eq 10 10) 100 50)")).toBe(100)
+  })
+
+  it("call if expression -> false", () => {
+    expect(evalRead("(if (eq 10 1) 100 50)")).toBe(50)
+  })
+
+  it("(atom? 1)", () => {
+    expect(evalRead("(atom? 1)")).toBe(true)
+  })
+
+  it("(atom? (list 1 2))", () => {
+    expect(evalRead("(atom? (list 1 2))")).toBe(false)
+  })
+
+  it("(define x 1) (atom? x)", () => {
+    evalRead("(define x 1)")
+    expect(evalRead("(atom? x)")).toBe(true)
+  })
+
+  it("(atom? non-existent-symbol)", () => {
+    expect(evalRead("(atom? non-existent-symbol)")).toBe(false)
+  })
+
+  it("(atom? 1 2)", () => {
+    expect(() => evalRead("(atom? 1 2)")).toThrow()
+  })
+
+  it("(car (list 1 2))", () => {
+    expect(evalRead("(car (list 1 2))")).toEqual(1)
+  })
+
+  it("(car)", () => {
+    expect(() => evalRead("(car)")).toThrow()
+  })
+
+  it("eval expression", () => {
+    expect(evalRead("(eval (+ 1 2))")).toEqual(3)
+  })
+
+  it.skip("eval quote", () => {
+    expect(evalRead("(eval (quote (+ 1 2)))")).toEqual(3)
+  })
+
+   it("eval quoted symbol", () => {
+    expect(evalRead("(eval (quote PI))")).toEqual(3.141592653589793)
+  })
+
+  it("calls cdr", () => {
+    expect(evalRead("(cdr (list 1 2 3))")).toEqual([2, 3])
+  })
+
+  it("throws cdr", () => {
+    expect(() => evalRead("(cdr 1 2)")).toThrow()
+  })
+
+  it("even procedure", () => {
+    expect(evalRead("(even? 10)")).toBe(true)
+  })
+
+  it("(even? 1)", () => {
+    expect(evalRead("(even? 1)")).toBe(false)
   })
 
   it("call eq procedure with true result", () => {

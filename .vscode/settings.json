@@ -2,5 +2,9 @@
   "editor.formatOnType": true,
   "[lisp]": {
     "editor.wordSeparators": "`|;:'\",()"
-  }
+  },
+  "zenMode.hideLineNumbers": false,
+  "search.showLineNumbers": true,
+  "notebook.lineNumbers": "on",
+  "editor.lineNumbers": "on"
 }

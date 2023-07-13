@@ -8,14 +8,16 @@ export const evaluate = (exp: Expression, env = defaultEnv) => {
   if (isNum(exp)) return (exp as Token).value
 
   const formName = car(exp).value
+  const formBody = cdr(exp)
+
   if (formName === "define") {
-    const [name, subExp] = cdr(exp)
+    const [name, subExp] = formBody
     env[name.value] = evaluate(subExp, env)
     return env[name.value]
   }
 
   if (formName === "lambda") {
-    const [params, body] = cdr(exp)
+    const [params, body] = formBody
     const lambda = (lexParams, lexBody, lexEnv) => (lexArgs) => {
       return evaluate(lexBody, createEnv(
         lexParams.map(p => p.value),
@@ -26,21 +28,19 @@ export const evaluate = (exp: Expression, env = defaultEnv) => {
   }
 
   if (formName === "if") {
-    const [predicate, trueExp, falseExp] = cdr(exp)
+    const [predicate, trueExp, falseExp] = formBody
     const resultExp = evaluate(predicate, env) ? trueExp : falseExp
     return evaluate(resultExp, env)
   }
 
   if (formName === "quote") {
-    const e = cadr(exp)
-    if (Array.isArray(e)) { // TODO: seems like a hack...
-      return "(" + e.map((t: Token) => String(t.value)).join(" ") + ")"
-    }
-    return e.value
+    const ex = car(formBody)
+    if (Array.isArray(ex)) return ex.map(t => t.value)
+    return ex.value
   }
 
   if (formName === "set") {
-    const [name, subExp] = cdr(exp)
+    const [name, subExp] = formBody
     const envFound = findEnv(env, name.value as string)
     if (envFound) {
       envFound[name.value as string] = evaluate(subExp, env)
@@ -50,7 +50,8 @@ export const evaluate = (exp: Expression, env = defaultEnv) => {
   }
 
   if (formName === "atom?") {
-    const [subExp] = cdr(exp)
+    const [subExp, execeedArguments] = formBody
+    if (execeedArguments) throw new Error("invalid proc call: too many arguments")
 
     if (!Array.isArray(subExp)) {
       if (subExp.type === "symbol") {
@@ -64,33 +65,41 @@ export const evaluate = (exp: Expression, env = defaultEnv) => {
   }
 
   if (formName === "car") {
-    const [subExp] = cdr(exp)
-    return car(subExp)
+    const [subExp, execeedArguments] = formBody
+    // if (execeedArguments) throw new Error("invalid proc call: too many arguments")
+    // if (!subExp) throw new Error("invalid proc call: not enough arguments. CAR expects a single list as argument")
+    if (execeedArguments || !subExp) throw new Error("CAR expects a single list as argument")
+    return car(evaluate(subExp, env))
   }
 
   if (formName === "cdr") {
-    const [subExp] = cdr(exp)
-    return "(" + (subExp as any).map((t: Token) => String(t.value)).join(" ") + ")" // hack!!!
+    const [subExp, execeedArguments] = formBody
+    if (execeedArguments) throw new Error("invalid proc call: too many arguments")
+    return cdr(evaluate(subExp, env))
   }
 
   if (formName === "list") {
-    const [...listParams] = cdr(exp)
-    return listParams.map(t => t.value)
+    return formBody.map(ex => evaluate(ex, env))
   }
 
   if (formName === "eval") {
-    const [subExp] = cdr(exp)
-    return evaluate(subExp, env)
+    const [subExp] = formBody
+    const result = evaluate(subExp, env)
+    if (typeof result === "string") return evaluate({ type: "symbol", value: result }, env)
+    if (Array.isArray(result)) return evalList(result, env)
+    return result
   }
 
-  if (formName === "cons") {
-    const [a, b] = cdr(exp)
-    // return "(" + [a, b].map(t => t.value).join(" . ") + ")" // HACK!!!!
-    return [a, b]
+  if (formName === "cons" || formName === "pair") {
+    const [a, b] = formBody
+    return [evaluate(a, env), evaluate(b, env)]
+  }
+
+  if (formName === "cond" || formName === "match") {
+    throw new Error(formName + " procedure not implemented")
   }
 
   // https://stackoverflow.com/questions/3482389/how-many-primitives-does-it-take-to-build-a-lisp-machine-ten-seven-or-five/3484206#3484206
-  // cons/pair – done?
   // cond/if – done
 
   // let - 
@@ -111,9 +120,9 @@ const car = (exp: Expression): Token => exp[0]
 const caar = (exp: any) => exp[0][0]
 
 const cdr = (exp: Expression) => (exp as Token[]).slice(1)
-const cadr = (exp: Expression) => car(cdr(exp))
-const caddr = (exp: Expression) => car(cdr(cdr(exp)))
-const cadddr = (exp: Expression) => car(cdr(cdr(cdr(exp))))
+// const cadr = (exp: Expression) => car(cdr(exp))
+// const caddr = (exp: Expression) => car(cdr(cdr(exp)))
+// const cadddr = (exp: Expression) => car(cdr(cdr(cdr(exp))))
 
 
 // showError err =

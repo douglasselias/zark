@@ -1,6 +1,17 @@
 import { describe, expect, it } from "@jest/globals"
-import { tokenize, readTokens } from "./reader"
 import { createNumberToken, createSymbolToken } from "./token"
+import { read, tokenize, readTokens } from "./reader"
+
+describe(read.name, () => {
+  const exp = "(define 1+ (lambda (n) (sum n 1)))"
+
+  expect(read(exp)).toEqual([
+    createSymbolToken("define"),
+    createSymbolToken("1+"),
+    [createSymbolToken("lambda"), [createSymbolToken("n")],
+    [createSymbolToken("sum"), createSymbolToken("n"), createNumberToken(1)]]
+  ])
+})
 
 describe(tokenize.name, () => {
   it("single number", () => {
@@ -63,10 +74,15 @@ describe(readTokens.name, () => {
     expect(readTokens([])).toEqual([])
   })
 
-  it.skip("define lambda", () => {
+  it("define lambda", () => {
     const exp = "(define 1+ (lambda (n) (sum n 1)))"
     const tokens = tokenize(exp)
-    expect(readTokens(tokens)).toEqual([])
+    expect(readTokens(tokens)).toEqual([
+      createSymbolToken("define"),
+      createSymbolToken("1+"),
+      [createSymbolToken("lambda"), [createSymbolToken("n")],
+      [createSymbolToken("sum"), createSymbolToken("n"), createNumberToken(1)]]
+    ])
   })
 
   it("single number", () => {

@@ -1,39 +1,6 @@
-from __future__ import division
-import re, sys, StringIO
-
-def Sym(s, symbol_table={}):
-    "Find or create unique Symbol entry for str s in symbol table."
-    if s not in symbol_table: symbol_table[s] = Symbol(s)
-    return symbol_table[s]
-
-_quote, _if, _set, _define, _lambda, _begin, _definemacro, = map(Sym, 
-"quote   if   set!  define   lambda   begin   define-macro".split())
-
-_quasiquote, _unquote, _unquotesplicing = map(Sym,
-"quasiquote   unquote   unquote-splicing".split())
-
-class Procedure(object):
-    "A user-defined Scheme procedure."
-    def __init__(self, parms, exp, env):
-        self.parms, self.exp, self.env = parms, exp, env
-    def __call__(self, *args): 
-        return eval(self.exp, Env(self.parms, args, self.env))
-
-################ parse, read, and user interaction
-
-def parse(inport):
-    "Parse a program: read and expand/error-check it."
-    # Backwards compatibility: given a str, convert it to an InPort
-    if isinstance(inport, str): inport = InPort(StringIO.StringIO(inport))
-    return expand(read(inport), toplevel=True)
-
-eof_object = Symbol('#<eof-object>') # Note: uninterned; can't be read
-
 class InPort(object):
     "An input port. Retains a line of chars."
     tokenizer = r"""\s*(,@|[('`,)]|"(?:[\\].|[^\\"])*"|;.*|[^\s('"`,;)]*)(.*)"""
-    def __init__(self, file):
-        self.file = file; self.line = ''
     def next_token(self):
         "Return the next token, reading new text into line buffer if needed."
         while True:
@@ -69,48 +36,6 @@ def read(inport):
     return eof_object if token1 is eof_object else read_ahead(token1)
 
 quotes = {"'":_quote, "`":_quasiquote, ",":_unquote, ",@":_unquotesplicing}
-
-def atom(token):
-    'Numbers become numbers; #t and #f are booleans; "..." string; otherwise Symbol.'
-    if token == '#t': return True
-    elif token == '#f': return False
-    elif token[0] == '"': return token[1:-1].decode('string_escape')
-    try: return int(token)
-    except ValueError:
-        try: return float(token)
-        except ValueError:
-            try: return complex(token.replace('i', 'j', 1))
-            except ValueError:
-                return Sym(token)
-
-def to_string(x):
-    "Convert a Python object back into a Lisp-readable string."
-    if x is True: return "#t"
-    elif x is False: return "#f"
-    elif isa(x, Symbol): return x
-    elif isa(x, str): return '"%s"' % x.encode('string_escape').replace('"',r'\"')
-    elif isa(x, list): return '('+' '.join(map(to_string, x))+')'
-    elif isa(x, complex): return str(x).replace('j', 'i')
-    else: return str(x)
-
-def load(filename):
-    "Eval every expression from a file."
-    repl(None, InPort(open(filename)), None)
-
-def repl(prompt='lispy> ', inport=InPort(sys.stdin), out=sys.stdout):
-    "A prompt-read-eval-print loop."
-    sys.stderr.write("Lispy version 2.0\n")
-    while True:
-        try:
-            if prompt: sys.stderr.write(prompt)
-            x = parse(inport)
-            if x is eof_object: return
-            val = eval(x)
-            if val is not None and out: print >> out, to_string(val)
-        except Exception as e:
-            print '%s: %s' % (type(e).__name__, e)
-
-################ Environment class
 
 class Env(dict):
     "An environment: a dict of {'var':val} pairs, with an outer Env."
@@ -165,12 +90,6 @@ def add_globals(self):
      'display':lambda x,port=sys.stdout:port.write(x if isa(x,str) else to_string(x))})
     return self
 
-isa = isinstance
-
-global_env = add_globals(Env())
-
-################ eval (tail recursive)
-
 def eval(x, env=global_env):
     "Evaluate an expression in an environment."
     while True:
@@ -207,8 +126,6 @@ def eval(x, env=global_env):
                 env = Env(proc.parms, exps, proc.env)
             else:
                 return proc(*exps)
-
-################ expand
 
 def expand(x, toplevel=False):
     "Walk tree of x, making optimizations/fixes, and signaling SyntaxError."
@@ -266,8 +183,6 @@ def require(x, predicate, msg="wrong length"):
     "Signal a syntax error if predicate is false."
     if not predicate: raise SyntaxError(to_string(x)+': '+msg)
 
-_append, _cons, _let = map(Sym, "append cons let".split())
-
 def expand_quasiquote(x):
     """Expand `x => 'x; `,x => x; `(,@x y) => (append x y) """
     if not is_pair(x):
@@ -304,7 +219,4 @@ eval(parse("""(begin
 ;; More macros can also go here
 
 )"""))
-
-if __name__ == '__main__':
-    repl()
 
