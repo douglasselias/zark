@@ -1,9 +1,9 @@
-export const print = (value: unknown) => console.log(printExpression(value))
+import { Expression } from "./token"
 
-export const printExpression = (value: unknown): string => {
-  if (Array.isArray(value))
-    return `(${value.map(d => printExpression(d)).join(" ")})`
-  if (typeof value === "function")
-    return `#<procedure(${value.name})>`
-  return String(value)
+export const expressionToString = (exp: Expression): string => {
+  if (Array.isArray(exp))
+    return `(${exp.map(e => expressionToString(e)).join(" ")})`
+  if (exp.type === "procedure")
+    return `#<procedure(${exp.value.name})>`
+  return String(exp.value)
 }

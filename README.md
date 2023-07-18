@@ -14,6 +14,8 @@ maybe change regex to parser combinator? need to profile regex and parser combin
 https://www.wikiwand.com/en/Shuhari
 http://rigaux.org/language-study/syntax-across-languages/
 
+https://floooh.github.io/2018/06/17/handles-vs-pointers.html
+
 ---
 
 Compiler optimizations:
@@ -26,6 +28,13 @@ Compiler optimizations:
 - Dead code elimination: remove unused code
 
 ---
+
+  // https://stackoverflow.com/questions/3482389/how-many-primitives-does-it-take-to-build-a-lisp-machine-ten-seven-or-five/3484206#3484206
+  // cond/if – done
+
+  // let - 
+  // letrec -
+
 
 Languages to test:
 
@@ -361,3 +370,30 @@ Lazy sequences
 Clojure-style protocols
 Full call/cc (call-with-current-continuation) support
 Explicit TCO (i.e. recur) with tail-position error checking
+
+
+---
+
+ Time Complexity;
+- Understanding different programming paradigms;
+- Understand recursion;
+- Understand boolean logic (very well);
+- Algorithms:
+	- Sorting algorithms;
+	- Popular Algorithms;
+- Operating Systems:
+	- What it is;
+	- How it works;
+	- What a File System is and how it works;
+- DataStructures:
+	- Understand how they live in memory;
+	- Some basic datastructures;
+	- How to build, navigate and isnert into a binary tree;
+- How floating points work;
+- Databases: 
+	- What it is;
+	- How it works;
+	- Concurrency;
+	- Normalization;
+-Data races;
+-Implementing Malloc;

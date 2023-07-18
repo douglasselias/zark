@@ -1,16 +1,25 @@
-const createToken = (type: TokenTypes) => (value: TokenValues): Token => ({ type, value })
-export const createNumberToken = createToken("number")
-export const createSymbolToken = createToken("symbol")
+export type Expression = EvaluatedToken | (EvaluatedToken | EvaluatedToken[])[]
+export type EvaluatedToken = NumberToken | SymbolToken | BoolToken | ProcedureToken
 
-export type Expression = Token | (Token|Token[])[]
+export type AST = AST_Token | (AST_Token | AST_Token[])[]
+export type AST_Token = NumberToken | SymbolToken
 
-export type Token = {
-  type: TokenTypes
-  value: TokenValues
+export type NumberToken = {
+  type: "number"
+  value: number
 }
 
-export type TokenTypes =
-  | "number"
-  | "symbol"
+type SymbolToken = {
+  type: "symbol"
+  value: string
+}
 
-type TokenValues = number | string
+type ProcedureToken = {
+  type: "procedure"
+  value: Function
+}
+
+export type BoolToken = {
+  type: "bool" 
+  value: boolean
+}

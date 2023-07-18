@@ -1,4 +1,4 @@
-import { Expression, Token } from "./token"
+import { Expression, AST_Token } from "./token"
 import { createEnv, Env, builtinEnv } from "./env"
 
 const compiledExpressions: string[] = []
@@ -24,8 +24,8 @@ generateHeaders()
 console.log(compiledExpressions.join("\n"))
 
 export const compile = (exp: Expression) => {
-  if (isSymbol(exp)) return (exp as Token).value
-  if (isNum(exp)) return (exp as Token).value.toString()
+  if (isSymbol(exp)) return (exp as AST_Token).value
+  if (isNum(exp)) return (exp as AST_Token).value.toString()
 
   const formName = car(exp).value
   if (formName === "define") {
@@ -39,14 +39,14 @@ export const compile = (exp: Expression) => {
   return compiledExpressions.join("\n")
 }
  
-const isSymbol = (exp: Expression) => isAtom(exp) && (exp as Token).type === "symbol"
-const isNum = (exp: Expression) => isAtom(exp) && (exp as Token).type === "number"
+const isSymbol = (exp: Expression) => isAtom(exp) && (exp as AST_Token).type === "symbol"
+const isNum = (exp: Expression) => isAtom(exp) && (exp as AST_Token).type === "number"
 const isAtom = (exp: Expression) => !Array.isArray(exp)
 
-const car = (exp: Expression): Token => exp[0]
+const car = (exp: Expression): AST_Token => exp[0]
 const caar = (exp: any) => exp[0][0]
 
-const cdr = (exp: Expression) => (exp as Token[]).slice(1)
+const cdr = (exp: Expression) => (exp as AST_Token[]).slice(1)
 const cadr = (exp: Expression) => car(cdr(exp))
 const caddr = (exp: Expression) => car(cdr(cdr(exp)))
 const cadddr = (exp: Expression) => car(cdr(cdr(cdr(exp))))

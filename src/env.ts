@@ -1,19 +1,34 @@
 // import { readFile } from "../os/file-reader"
 
-const sum = (numbers: number[]) => numbers.reduce((a, b) => a + b)
-const even = (value: number) => (value & 1) === 0
+import { NumberToken, AST_Token, EvaluatedToken, BoolToken } from "./token"
 
-const mathProperties = Object.getOwnPropertyNames(Math)
+const sum = (numbers: NumberToken[]): NumberToken => ({
+  type: "number",
+  value: numbers.reduce((total, current) => current.value + total, 0)
+})
+
+const even = (number: NumberToken[]): BoolToken => ({
+  type: "bool",
+  value: (number[0].value & 1) === 0,
+})
+
+const eq = (list: EvaluatedToken[]): BoolToken => ({
+  type: "bool",
+  value: list[0].value === list[1].value,
+})
+
 
 export const builtinEnv = {
-  "+": sum, sum,
-  "even?": even, even,
-  eq: (v: any[]) => v[0] === v[1],
+  "even?": even,
+  sum,
+  eq,
+  PI: 3.141592653589793
   // "load-file":(a:any[])=> readFile(a[0])
 }
-for (const propertyName of mathProperties) {
-  builtinEnv[propertyName] = Math[propertyName]
-}
+
+// Object.getOwnPropertyNames(Math).forEach(propertyName => {
+//   builtinEnv[propertyName] = Math[propertyName]
+// })
 
 export type Env = {
   [key: string]: any

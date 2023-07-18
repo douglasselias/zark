@@ -1,6 +1,6 @@
-import { Token } from "./token"
+import { Expression, AST_Token } from "./token"
 
-export const read = (text: string) => readTokens(tokenize(text))
+export const read = (text: string) => generateAST(tokenize(text))
 
 export const tokenize = (code: string): string[] => {
   const parenthesesRegex = /^[\(\)]/
@@ -28,7 +28,7 @@ export const tokenize = (code: string): string[] => {
   return tokens
 }
 
-export const readTokens = (tokens: string[]): Token | Token[] => {
+export const generateAST = (tokens: string[]): Expression => {
   if (tokens.length === 0) return []
 
   const token = tokens.shift()!
@@ -37,19 +37,18 @@ export const readTokens = (tokens: string[]): Token | Token[] => {
     throw new Error("Unexpected )")
 
   if (token === "(") {
-    const list: Token[] = []
+    const list: AST_Token[] = []
 
     while (tokens[0] !== ")")
-      list.push(readTokens(tokens) as any)
+      list.push(generateAST(tokens) as any)
 
     tokens.shift()
     return list
   }
 
-  return readAtom(token)
-}
+  if (/^-?\d+$/.test(token))
+    return { type: "number", value: parseInt(token) }
 
-const readAtom = (token: string): Token => {
-  if (/^-?\d+$/.test(token)) return { type: "number", value: parseInt(token) }
   return { type: "symbol", value: token }
 }
+

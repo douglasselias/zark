@@ -49,13 +49,7 @@ class Env(dict):
                 raise TypeError('expected %s, given %s, ' 
                                 % (to_string(parms), to_string(args)))
             self.update(zip(parms,args))
-    def find(self, var):
-        "Find the innermost Env where var appears."
-        if var in self: return self
-        elif self.outer is None: raise LookupError(var)
-        else: return self.outer.find(var)
 
-def is_pair(x): return x != [] and isa(x, list)
 def cons(x, y): return [x]+y
 
 def callcc(proc):
@@ -69,13 +63,7 @@ def callcc(proc):
         else: raise w
 
 def add_globals(self):
-    "Add some Scheme standard procedures."
-    import math, cmath, operator as op
-    self.update(vars(math))
-    self.update(vars(cmath))
     self.update({
-     '+':op.add, '-':op.sub, '*':op.mul, '/':op.div, 'not':op.not_, 
-     '>':op.gt, '<':op.lt, '>=':op.ge, '<=':op.le, '=':op.eq, 
      'equal?':op.eq, 'eq?':op.is_, 'length':len, 'cons':cons,
      'car':lambda x:x[0], 'cdr':lambda x:x[1:], 'append':op.add,  
      'list':lambda *x:list(x), 'list?': lambda x:isa(x,list),
@@ -86,9 +74,7 @@ def add_globals(self):
      'open-input-file':open,'close-input-port':lambda p: p.file.close(), 
      'open-output-file':lambda f:open(f,'w'), 'close-output-port':lambda p: p.close(),
      'eof-object?':lambda x:x is eof_object, 'read-char':readchar,
-     'read':read, 'write':lambda x,port=sys.stdout:port.write(to_string(x)),
      'display':lambda x,port=sys.stdout:port.write(x if isa(x,str) else to_string(x))})
-    return self
 
 def eval(x, env=global_env):
     "Evaluate an expression in an environment."
@@ -129,7 +115,6 @@ def eval(x, env=global_env):
 
 def expand(x, toplevel=False):
     "Walk tree of x, making optimizations/fixes, and signaling SyntaxError."
-    require(x, x!=[])                    # () => Error
     if not isa(x, list):                 # constant => unchanged
         return x
     elif x[0] is _quote:                 # (quote exp)
@@ -179,10 +164,6 @@ def expand(x, toplevel=False):
     else:                                #        => macroexpand if m isa macro
         return map(expand, x)            # (f arg...) => expand each
 
-def require(x, predicate, msg="wrong length"):
-    "Signal a syntax error if predicate is false."
-    if not predicate: raise SyntaxError(to_string(x)+': '+msg)
-
 def expand_quasiquote(x):
     """Expand `x => 'x; `,x => x; `(,@x y) => (append x y) """
     if not is_pair(x):
@@ -200,10 +181,7 @@ def expand_quasiquote(x):
 def let(*args):
     args = list(args)
     x = cons(_let, args)
-    require(x, len(args)>1)
     bindings, body = args[0], args[1:]
-    require(x, all(isa(b, list) and len(b)==2 and isa(b[0], Symbol)
-                   for b in bindings), "illegal binding list")
     vars, vals = zip(*bindings)
     return [[_lambda, list(vars)]+map(expand, body)] + map(expand, vals)
 
