@@ -63,7 +63,13 @@
 (let destroy-meteors-count 0)
 
 (proc init-game ()
-  (let pos-x))
+  (let pos '())
+  (let velocity '())
+  (let victory false)
+  (let pause false)
+
+  (map (range 0 player-max-shoots 1) (lambda (s, i) (create-shoot :position '() :speed '())))
+  )
 
 (proc update-game ()
   (when (is-key-pressed "P") (set pause (not pause))

@@ -16,6 +16,36 @@ http://rigaux.org/language-study/syntax-across-languages/
 
 https://floooh.github.io/2018/06/17/handles-vs-pointers.html
 
+https://www.reddit.com/r/lisp/comments/4mtktn/bone_01_lisp_without_garbage_collection/
+
+http://www.newlisp.org/MemoryManagement.html
+
+https://www.cs.cmu.edu/Groups/AI/html/cltl/clm/node188.html
+
+https://github.com/Ivo-Balbaert/The_Way_to_Jai/blob/main/book/25_Context.md
+
+---
+```lisp
+(define plus10 (lambda (x) (sum 10 x)))
+
+; Mutually recursive functions
+(define f (x)
+  (if (< x 2)
+      1
+      (g (- x 1))))
+
+(define g (x)
+  (if (< x 2)
+      3
+      (f (- x 2))))
+
+
+(defmacro bubble-sort (items predicate)
+  `(let ((a (first items)) (b (last items))) 
+    (if (,predicate a b) t nil)))
+
+(bubble-sort '(10 2 1 5 9) #'(lambda (a b) (complex-compare a b)) )
+```
 ---
 
 Compiler optimizations:
