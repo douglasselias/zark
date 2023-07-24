@@ -427,3 +427,96 @@ Explicit TCO (i.e. recur) with tail-position error checking
 	- Normalization;
 -Data races;
 -Implementing Malloc;
+
+---
+
+* Add the `quasiquote` function.
+  The `quasiquote` function takes a parameter `ast` and has the
+  following conditional.
+  - If `ast` is a list starting with the "unquote" symbol, return its
+    second element.
+  - If `ast` is a list failing previous test, the result will be a
+    list populated by the following process.
+
+    The result is initially an empty list.
+    Iterate over each element `elt` of `ast` in reverse order:
+    - If `elt` is a list starting with the "splice-unquote" symbol,
+      replace the current result with a list containing:
+      the "concat" symbol,
+      the second element of `elt`,
+      then the previous result.
+    - Else replace the current result with a list containing:
+      the "cons" symbol,
+      the result of calling `quasiquote` with `elt` as argument,
+      then the previous result.
+
+    This process can also be described recursively:
+    - If `ast` is empty return it unchanged. else let `elt` be its
+      first element.
+    - If `elt` is a list starting with the "splice-unquote" symbol,
+      return a list containing:
+      the "concat" symbol,
+      the second element of `elt`,
+      then the result of processing the rest of `ast`.
+    - Else return a list containing:
+      the "cons" symbol,
+      the result of calling `quasiquote` with `elt` as argument,
+      then the result of processing the rest of `ast`.
+  - If `ast` is a map or a symbol, return a list containing:
+    the "quote" symbol,
+    then `ast`.
+  - Else return `ast` unchanged.
+    Such forms are not affected by evaluation, so you may quote them
+    as in the previous case if implementation is easier.
+
+* Optionally, add a the `quasiquoteexpand` special form.
+  This form calls the `quasiquote` function using the first `ast`
+  argument (second list element) and returns the result.
+  It has no other practical purpose than testing your implementation
+  of the `quasiquote` internal function.
+
+* Add the `quasiquote` special form.
+  This form does the same than `quasiquoteexpand`,
+  but evaluates the result in the current environment before returning it,
+  either by recursively calling `EVAL` with the result and `env`,
+  or by assigning `ast` with the result and continuing execution at
+  the top of the loop (TCO).
+
+  ---
+
+  * Add a new attribute `is_macro` to mal function types. This should
+  default to false.
+
+* Add a new special form `defmacro!`. This is very similar to the
+  `def!` form, but before the evaluated value (mal function) is set in
+  the environment, the `is_macro` attribute should be set to true.
+
+* Add a `is_macro_call` function: This function takes arguments `ast`
+  and `env`. It returns true if `ast` is a list that contains a symbol
+  as the first element and that symbol refers to a function in the
+  `env` environment and that function has the `is_macro` attribute set
+  to true. Otherwise, it returns false.
+
+* Add a `macroexpand` function: This function takes arguments `ast`
+  and `env`. It calls `is_macro_call` with `ast` and `env` and loops
+  while that condition is true. Inside the loop, the first element of
+  the `ast` list (a symbol), is looked up in the environment to get
+  the macro function. This macro function is then called/applied with
+  the rest of the `ast` elements (2nd through the last) as arguments.
+  The return value of the macro call becomes the new value of `ast`.
+  When the loop completes because `ast` no longer represents a macro
+  call, the current value of `ast` is returned.
+
+* In the evaluator (`EVAL`) before the special forms switch (apply
+  section), perform macro expansion by calling the `macroexpand`
+  function with the current value of `ast` and `env`. Set `ast` to the
+  result of that call. If the new value of `ast` is no longer a list
+  after macro expansion, then return the result of calling `eval_ast`
+  on it, otherwise continue with the rest of the apply section
+  (special forms switch).
+
+* Add a new special form condition for `macroexpand`. Call the
+  `macroexpand` function using the first `ast` argument (second list
+  element) and `env`. Return the result. This special form allows
+  a mal program to do explicit macro expansion without applying the
+  result (which can be useful for debugging macro expansion).

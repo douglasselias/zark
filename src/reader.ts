@@ -3,12 +3,14 @@ import { Expression, AST_Token } from "./token"
 export const read = (text: string) => generateAST(tokenize(text))
 
 export const tokenize = (code: string): string[] => {
+  // const quoteRegex = /^['`,]/
   const parenthesesRegex = /^[\(\)]/
   const symbolRegex = /^\d*[a-zA-Z\-!?+]+/
   const numberRegex = /^-?\d+/
   const unusedCharacters = /^./
 
   const regexes = [
+    // quoteRegex,
     parenthesesRegex,
     symbolRegex,
     numberRegex,
@@ -45,6 +47,16 @@ export const generateAST = (tokens: string[]): Expression => {
     tokens.shift()
     return list
   }
+
+  // if (token === "'") {
+  //   return [
+  //     {
+  //       type: "symbol",
+  //       value: "quote",
+  //     },
+  //     generateAST(tokens) as any,
+  //   ]
+  // }
 
   if (/^-?\d+$/.test(token))
     return { type: "number", value: parseInt(token) }

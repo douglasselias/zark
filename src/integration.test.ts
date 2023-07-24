@@ -82,12 +82,32 @@ describe("integration tests", () => {
     expect(interpreter("(eval (sum 1 2))")).toEqual("3")
   })
 
+  it("quote shorthand symbol", () => {
+    expect(interpreter("(q PI)")).toEqual("PI")
+  })
+
+  it.skip("eval quoted shorthand symbol", () => {
+    expect(interpreter("(eval (q PI))")).toEqual("3.141592653589793")
+  })
+
   it("eval quoted symbol", () => {
-    expect(interpreter("(eval (quote PI))")).toEqual("3.141592653589793")
+    expect(interpreter("(eval (q PI))")).toEqual("3.141592653589793")
+  })
+
+  it.skip("eval quote shorthand", () => {
+    expect(interpreter("(eval (q (sum 1 2)))")).toEqual("3")
   })
 
   it("eval quote", () => {
-    expect(interpreter("(eval (quote (sum 1 2)))")).toEqual("3")
+    expect(interpreter("(eval (q (sum 1 2)))")).toEqual("3")
+  })
+
+  it("quasiquote without unquote", () => {
+    expect(interpreter("(qq (sum 1 2))")).toEqual("(sum 1 2)")
+  })
+
+  it.only("quasiquote with unquote", () => {
+    expect(interpreter("(qq (uq (sum 1 2)))")).toEqual("3")
   })
 
   it("calls cdr", () => {

@@ -4,6 +4,7 @@ import { Expression, AST_Token, EvaluatedToken } from "./token"
 const defaultEnv = createEnv(Object.keys(builtinEnv), Object.values(builtinEnv))
 
 export const evaluate = (exp: Expression, env = defaultEnv) => {
+  console.log('what is exp: ', JSON.stringify(exp, null, 2))
   if (isSymbol(exp)) {
     const result = findEnv(env, (exp as AST_Token).value as string)?.[(exp as AST_Token).value as string]
     if (typeof result === "function") return { type: "procedure", value: result }
@@ -22,6 +23,12 @@ export const evaluate = (exp: Expression, env = defaultEnv) => {
     return env[name.value as string]
   }
 
+  // if (formName === "macro") {
+  //   const [name, subExp] = formBody
+  //   env[name.value as string] = evaluate(subExp, env)
+  //   return env[name.value as string]
+  // }
+
   if (formName === "lambda") {
     const [params, body] = formBody
     const lambda = (lexArgs) => {
@@ -39,7 +46,23 @@ export const evaluate = (exp: Expression, env = defaultEnv) => {
     return evaluate(resultExp, env)
   }
 
-  if (formName === "quote") {
+  if (formName === "q") { // quote
+    const [subExp] = formBody
+    return subExp
+  }
+
+  if (formName === "qq") { // quasiquote
+    const [...subExps] = formBody
+    if(car(subExps).value === "uq") return evaluate(car(cdr(subExps)),env)
+
+  }
+
+  if (formName === "uq") { // unquote
+    const [subExp] = formBody
+    return evaluate(subExp, env)
+  }
+
+  if (formName === "suq") { // splice-unquote
     const [subExp] = formBody
     return subExp
   }
