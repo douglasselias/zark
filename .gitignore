@@ -1,11 +1,3 @@
-# Coverage directory used by tools like istanbul
 coverage
-
-# Compiled binary addons (https://nodejs.org/api/addons.html)
-build/Release
-
-# Dependency directories
-node_modules/
-
-# TypeScript cache
-*.tsbuildinfo
+node_modules
+*.exe
