@@ -107,7 +107,16 @@ describe("integration tests", () => {
   })
 
   it.only("quasiquote with unquote", () => {
-    expect(interpreter("(qq (uq (sum 1 2)))")).toEqual("3")
+    expect(interpreter("(qq (uq (sum 1 2)))")).toEqual("(3)")
+  })
+
+  it("do block", () => {
+    expect(interpreter(`
+    (do
+      (define gravity 9)
+      (define force 1)
+      (sum gravity force))
+    `)).toEqual("10")
   })
 
   it("calls cdr", () => {

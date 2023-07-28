@@ -4,7 +4,7 @@ import { Expression, AST_Token, EvaluatedToken } from "./token"
 const defaultEnv = createEnv(Object.keys(builtinEnv), Object.values(builtinEnv))
 
 export const evaluate = (exp: Expression, env = defaultEnv) => {
-  console.log('what is exp: ', JSON.stringify(exp, null, 2))
+  // console.log('what is exp: ', JSON.stringify(exp, null, 2))
   if (isSymbol(exp)) {
     const result = findEnv(env, (exp as AST_Token).value as string)?.[(exp as AST_Token).value as string]
     if (typeof result === "function") return { type: "procedure", value: result }
@@ -51,10 +51,64 @@ export const evaluate = (exp: Expression, env = defaultEnv) => {
     return subExp
   }
 
-  if (formName === "qq") { // quasiquote
-    const [...subExps] = formBody
-    if(car(subExps).value === "uq") return evaluate(car(cdr(subExps)),env)
+  // def expand_quasiquote(x):
+  //   """Expand `x => 'x; `,x => x; `(,@x y) => (append x y) """
+  //   if not is_pair(x):
+  //       return [_quote, x]
+  //   if x[0] is _unquote:
+  //       return x[1]
+  //   elif is_pair(x[0]) and x[0][0] is _unquotesplicing:
+  //       require(x[0], len(x[0])==2)
+  //       return [_append, x[0][1], expand_quasiquote(x[1:])]
+  //   else:
+  //       return [_cons, expand_quasiquote(x[0]), expand_quasiquote(x[1:])]
 
+  if (formName === "qq") { // quasiquote
+    const [subExp, execeedArguments] = formBody
+    if (execeedArguments) throw new Error("invalid proc call (qq): too many arguments")
+
+    const expand_quasiquote = (qq_ast: AST_Token[]) => {
+      console.log('QQ: ', qq_ast)
+      console.log('QQ L: ', qq_ast.length)
+      const expandedForm: any = []
+
+      // [uq [sum 1 2]]
+
+      let index = 0
+      // let depth = 0
+      while (index < qq_ast.length) {
+        const ast_token = qq_ast[index]
+        if (ast_token.type === "symbol" && ast_token.value === "uq") {
+          expandedForm.push(evaluate(qq_ast[index+1], env))
+          index += 2
+          continue
+        }
+        if (Array.isArray(ast_token)) {
+          expandedForm.push(expand_quasiquote(ast_token))
+          index++
+          continue
+        }
+        expandedForm.push(ast_token)
+        index++
+      }
+
+      return expandedForm
+
+      // const op = car(qq_ast)
+      // if (op.type === "symbol" && op.value === "uq") return evaluate(cdr(qq_ast), env)
+
+      // return qq_ast.map(ast_token => {
+      //   if (Array.isArray(ast_token)) return expand_quasiquote(ast_token)
+      //   if (ast_token.type === "symbol" && ast_token.value === "uq") return evaluate(cdr(qq_ast), env)
+      //   return ast_token
+      // })
+      // if (!Array.isArray(x)) return x
+      // // if (car(x).value === "uq") return car(cdr(x))
+      // // return [{type: ""}]
+      // if (car(x).value === "uq") return evaluate(car(cdr(x)), env)
+    }
+
+    return expand_quasiquote(subExp as any)
   }
 
   if (formName === "uq") { // unquote
@@ -67,9 +121,15 @@ export const evaluate = (exp: Expression, env = defaultEnv) => {
     return subExp
   }
 
+  if (formName === "do") {
+    return formBody.map(form => {
+      return evaluate(form, env)
+    })[formBody.length - 1]
+  }
+
   if (formName === "eval") {
     const [subExp] = formBody
-    return evaluate(evaluate(subExp, env),env)
+    return evaluate(evaluate(subExp, env), env)
   }
 
   if (formName === "set") {
@@ -89,7 +149,7 @@ export const evaluate = (exp: Expression, env = defaultEnv) => {
     const r = evaluate(subExp, env)
 
     if (Array.isArray(r)) return { type: "bool", value: false }
-    if(!r) return { type: "bool", value: false}
+    if (!r) return { type: "bool", value: false }
     if (r.type === "number") return { type: "bool", value: true }
 
     if (r.type === "symbol") {
