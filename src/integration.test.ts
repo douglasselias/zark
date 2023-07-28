@@ -1,6 +1,6 @@
 import { describe, expect, it } from "@jest/globals"
 
-import { read, tokenize } from "./reader"
+import { read } from "./reader"
 import { evaluate } from "./evaluator"
 import { expressionToString } from "./printer"
 
@@ -9,6 +9,10 @@ const interpreter = (code) => expressionToString(evaluate(read(code)))
 describe("integration tests", () => {
   it("sum two numbers", () => {
     expect(interpreter("(sum 1 2)")).toEqual("3")
+  })
+
+  it.only("sum two numbers (floats)", () => {
+    expect(interpreter("(sum 1.23 2.52)")).toEqual("3.75")
   })
 
   it("defines a value and sum by itself", () => {
@@ -86,15 +90,11 @@ describe("integration tests", () => {
     expect(interpreter("(q PI)")).toEqual("PI")
   })
 
-  it.skip("eval quoted shorthand symbol", () => {
-    expect(interpreter("(eval (q PI))")).toEqual("3.141592653589793")
-  })
-
   it("eval quoted symbol", () => {
     expect(interpreter("(eval (q PI))")).toEqual("3.141592653589793")
   })
 
-  it.skip("eval quote shorthand", () => {
+  it("eval quote shorthand", () => {
     expect(interpreter("(eval (q (sum 1 2)))")).toEqual("3")
   })
 

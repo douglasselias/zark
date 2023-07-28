@@ -8,10 +8,11 @@ export const evaluate = (exp: Expression, env = defaultEnv) => {
   if (isSymbol(exp)) {
     const result = findEnv(env, (exp as AST_Token).value as string)?.[(exp as AST_Token).value as string]
     if (typeof result === "function") return { type: "procedure", value: result }
-    if (typeof result === "number") return { type: "number", value: result }
+    // if (typeof result === "number") return { type: "number", value: result }
     return result
   }
   if (isNum(exp)) return (exp as EvaluatedToken)
+  if (isFloat(exp)) return (exp as EvaluatedToken)
   if (isString(exp)) return (exp as EvaluatedToken)
 
   const formName = car(exp).value
@@ -135,6 +136,7 @@ export const evaluate = (exp: Expression, env = defaultEnv) => {
     if (isList(r)) return { type: "bool", value: false }
     if (!r) return { type: "bool", value: false }
     if (r.type === "number") return { type: "bool", value: true }
+    if(r.type === "float") return { type: "bool", value: true }
 
     if (r.type === "symbol") {
       const envFound = findEnv(env, r.value as string)
@@ -154,7 +156,7 @@ export const evaluate = (exp: Expression, env = defaultEnv) => {
 
   if (formName === "cdr") {
     const [subExp, execeedArguments] = formBody
-    if (execeedArguments) throw new Error("invalid proc call: too many arguments")
+    if (execeedArguments) throw new Error("CDR expects a single list as argument")
     return cdr(evaluate(subExp, env))
   }
 
@@ -178,6 +180,7 @@ export const evaluate = (exp: Expression, env = defaultEnv) => {
 
 const isSymbol = (exp: Expression) => isAtom(exp) && (exp as AST_Token).type === "symbol"
 const isNum = (exp: Expression) => isAtom(exp) && (exp as AST_Token).type === "number"
+const isFloat = (exp: Expression) =>  isAtom(exp) && (exp as AST_Token).type === "float"
 const isString = (exp: Expression) => isAtom(exp) && (exp as AST_Token).type === "string"
 const isAtom = (exp: Expression) => !isList(exp)
 const isList = (exp: Expression) => Array.isArray(exp)

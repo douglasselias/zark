@@ -1,9 +1,9 @@
 // import { readFile } from "../os/file-reader"
 
-import { NumberToken, AST_Token, EvaluatedToken, BoolToken, StringToken } from "./token"
+import { NumberToken, AST_Token, EvaluatedToken, BoolToken, StringToken, FloatToken } from "./token"
 
-const sum = (numbers: NumberToken[]): NumberToken => ({
-  type: "number",
+const sum = (numbers: (NumberToken|FloatToken)[]): NumberToken|FloatToken => ({
+  type: numbers.some(n => n.type === "float") ? "float" : "number",
   value: numbers.reduce((total, current) => current.value + total, 0)
 })
 
@@ -26,7 +26,7 @@ export const builtinEnv = {
   "even?": even,
   sum,
   eq,
-  PI: 3.141592653589793,
+  PI: { type: "float", value: Math.PI },
   join,
   // "load-file":(a:any[])=> readFile(a[0])
 }

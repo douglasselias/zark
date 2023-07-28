@@ -4,6 +4,7 @@ export const read = (text: string) => generateAST(tokenize(text))
 
 export const tokenize = (code: string): string[] => {
   const parenthesesRegex = /^[\(\)]/
+  const floatRegex = /^-?\d+\.\d+/
   const symbolRegex = /^\d*[a-zA-Z0-9\-!?+]+/
   const numberRegex = /^-?\d+/
   const stringRegex = /^"[\w\s]+"/
@@ -11,6 +12,7 @@ export const tokenize = (code: string): string[] => {
 
   const regexes = [
     parenthesesRegex,
+    floatRegex,
     symbolRegex,
     numberRegex,
     stringRegex,
@@ -18,11 +20,14 @@ export const tokenize = (code: string): string[] => {
   ].map(regex => regex.source).join("|")
 
   const joinedRegexes = new RegExp(regexes)
+  // console.log('REGEX: ',joinedRegexes.source)
   const tokens: string[] = []
   let remainingCode = code.trimStart()
 
   while (remainingCode.length !== 0) {
     const [match] = joinedRegexes.exec(remainingCode)!
+    // console.log('CODE:', remainingCode.trim())
+    // console.log('M:', match)
     tokens.push(match)
     remainingCode = remainingCode.slice(match.length).trimStart()
   }
@@ -50,6 +55,9 @@ export const generateAST = (tokens: string[]): Expression => {
 
   if (/^-?\d+$/.test(token))
     return { type: "number", value: parseInt(token) }
+
+  if (/^-?\d+\.\d+$/.test(token))
+    return { type: "float", value: parseFloat(token) }
 
   if (/^"[\w\s]+"$/.test(token))
     return { type: "string", value: token.replace(/\"/g, "") }
