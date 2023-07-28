@@ -7,12 +7,28 @@ import { expressionToString } from "./printer"
 const interpreter = (code) => expressionToString(evaluate(read(code)))
 
 describe("integration tests", () => {
+  it("empty program - throws", () => {
+    expect(()=> interpreter("")).toThrow()
+  })
+
+  it("throws on single right paren", () => {
+    expect(()=> interpreter(")")).toThrow()
+  })
+
   it("sum two numbers", () => {
     expect(interpreter("(sum 1 2)")).toEqual("3")
   })
 
-  it.only("sum two numbers (floats)", () => {
+  it("sum two numbers (floats)", () => {
     expect(interpreter("(sum 1.23 2.52)")).toEqual("3.75")
+  })
+
+  it("divide three numbers", () => {
+    expect(interpreter("(div 12 3 2)")).toEqual("2")
+  })
+
+  it("subtract three numbers", () => {
+    expect(interpreter("(sub 10 3 2)")).toEqual("5")
   })
 
   it("defines a value and sum by itself", () => {

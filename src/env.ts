@@ -2,9 +2,19 @@
 
 import { NumberToken, AST_Token, EvaluatedToken, BoolToken, StringToken, FloatToken } from "./token"
 
-const sum = (numbers: (NumberToken|FloatToken)[]): NumberToken|FloatToken => ({
+const sum = (numbers: (NumberToken | FloatToken)[]): NumberToken | FloatToken => ({
   type: numbers.some(n => n.type === "float") ? "float" : "number",
   value: numbers.reduce((total, current) => current.value + total, 0)
+})
+
+const sub = (numbers: (NumberToken | FloatToken)[]): NumberToken | FloatToken => ({
+  type: numbers.some(n => n.type === "float") ? "float" : "number",
+  value: numbers.slice(1).reduce((total, current) => total - current.value, numbers[0].value)
+})
+
+const div = (numbers: (NumberToken | FloatToken)[]): NumberToken | FloatToken => ({
+  type: numbers.some(n => n.type === "float") ? "float" : "number",
+  value: numbers.slice(1).reduce((total, current) => total / current.value, numbers[0].value)
 })
 
 const even = (number: NumberToken[]): BoolToken => ({
@@ -24,7 +34,7 @@ const join = (strings: StringToken[]) => ({
 
 export const builtinEnv = {
   "even?": even,
-  sum,
+  sum, sub, div,
   eq,
   PI: { type: "float", value: Math.PI },
   join,
