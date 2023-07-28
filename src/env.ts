@@ -1,20 +1,27 @@
-// import { readFile } from "../os/file-reader"
+import { readFile } from "../os/file-reader"
+import { evaluate } from "./evaluator"
+import { read } from "./reader"
 
-import { NumberToken, AST_Token, EvaluatedToken, BoolToken, StringToken, FloatToken } from "./token"
+import { NumberToken, EvaluatedToken, BoolToken, StringToken, FloatToken } from "./token"
 
 const sum = (numbers: (NumberToken | FloatToken)[]): NumberToken | FloatToken => ({
   type: numbers.some(n => n.type === "float") ? "float" : "number",
-  value: numbers.reduce((total, current) => current.value + total, 0)
+  value: numbers.reduce((total, current) => current.value + total, 0),
+})
+
+const mul = (numbers: (NumberToken | FloatToken)[]): NumberToken | FloatToken => ({
+  type: numbers.some(n => n.type === "float") ? "float" : "number",
+  value: numbers.reduce((total, current) => current.value * total, 1),
 })
 
 const sub = (numbers: (NumberToken | FloatToken)[]): NumberToken | FloatToken => ({
   type: numbers.some(n => n.type === "float") ? "float" : "number",
-  value: numbers.slice(1).reduce((total, current) => total - current.value, numbers[0].value)
+  value: numbers.slice(1).reduce((total, current) => total - current.value, numbers[0].value),
 })
 
 const div = (numbers: (NumberToken | FloatToken)[]): NumberToken | FloatToken => ({
   type: numbers.some(n => n.type === "float") ? "float" : "number",
-  value: numbers.slice(1).reduce((total, current) => total / current.value, numbers[0].value)
+  value: numbers.slice(1).reduce((total, current) => total / current.value, numbers[0].value),
 })
 
 const even = (number: NumberToken[]): BoolToken => ({
@@ -27,18 +34,41 @@ const eq = (list: EvaluatedToken[]): BoolToken => ({
   value: list[0].value === list[1].value,
 })
 
+const lessThan = (numbers: (NumberToken | FloatToken)[]) => ({
+  type: "bool",
+  value: numbers[0].value < numbers[1].value,
+})
+
+const greaterThan = (numbers: (NumberToken | FloatToken)[]) => ({
+  type: "bool",
+  value: numbers[0].value > numbers[1].value,
+})
+
 const join = (strings: StringToken[]) => ({
   type: "string",
   value: strings.map(s => s.value).join(""),
 })
 
+const loadFile = (path: StringToken[]) => ({
+  type: "string", // eval should not be here...
+  value: evaluate(read(readFile(path[0].value))),
+})
+
+const evalFn = (exps: any[]) => {
+  // TODO, test...
+  return evaluate(exps)
+}
+
 export const builtinEnv = {
   "even?": even,
-  sum, sub, div,
+  sum, sub, div, mul,
+  "less-than": lessThan,
+  "greater-than": greaterThan,
   eq,
   PI: { type: "float", value: Math.PI },
   join,
-  // "load-file":(a:any[])=> readFile(a[0])
+  "load-file": loadFile,
+  "eval": evalFn
 }
 
 // Object.getOwnPropertyNames(Math).forEach(propertyName => {

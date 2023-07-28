@@ -7,7 +7,7 @@ export const tokenize = (code: string): string[] => {
   const floatRegex = /^-?\d+\.\d+/
   const symbolRegex = /^\d*[a-zA-Z0-9\-!?+]+/
   const numberRegex = /^-?\d+/
-  const stringRegex = /^"[\w\s]+"/
+  const stringRegex = /^"[\w\s\.]+"/
   const unusedCharacters = /^./
 
   const regexes = [
@@ -59,7 +59,7 @@ export const generateAST = (tokens: string[]): Expression => {
   if (/^-?\d+\.\d+$/.test(token))
     return { type: "float", value: parseFloat(token) }
 
-  if (/^"[\w\s]+"$/.test(token))
+  if (/^"[\w\s\.]+"$/.test(token))
     return { type: "string", value: token.replace(/\"/g, "") }
 
   return { type: "symbol", value: token }

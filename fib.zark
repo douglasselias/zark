@@ -1,0 +1,7 @@
+(define fib (lambda n)
+  (if (less-than n 2)
+      n
+      (mul n (fib (sub n 1)))))
+
+(loop (i 3)
+  (define (join "vec" (to-string i)) i))

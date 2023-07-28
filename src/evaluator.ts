@@ -173,6 +173,10 @@ export const evaluate = (exp: Expression, env = defaultEnv) => {
     throw new Error(formName + " procedure not implemented")
   }
 
+  if (formName === "loop") {
+    
+  }
+
   const proc = evaluate(car(exp), env)
   const args = evalList(cdr(exp), env)
   return proc.value(args)

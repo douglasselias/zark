@@ -31,6 +31,28 @@ describe("integration tests", () => {
     expect(interpreter("(sub 10 3 2)")).toEqual("5")
   })
 
+  it("multiply three numbers", () => {
+    expect(interpreter("(mul 10 3 2)")).toEqual("60")
+  })
+
+  it("greater than", () => {
+    expect(interpreter("(greater-than 0 10)")).toEqual("false")
+  })
+
+  it("less than", () => {
+    expect(interpreter("(less-than 1 2)")).toEqual("true")
+  })
+
+  it.skip("load file", () => {
+    const result = interpreter(`(load-file "fib.zark")`)
+    console.log("loaded file: ",JSON.stringify(result, null, 2))
+    expect(result).toEqual(`#<procedure(fib)>`)
+  })
+
+  it.skip("loops", () => {
+    expect(interpreter(``))
+  })
+
   it("defines a value and sum by itself", () => {
     expect(interpreter("(define x 2)")).toEqual("2")
     expect(interpreter("(sum x x)")).toEqual("4")
