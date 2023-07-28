@@ -3,17 +3,17 @@ import { Expression, AST_Token } from "./token"
 export const read = (text: string) => generateAST(tokenize(text))
 
 export const tokenize = (code: string): string[] => {
-  // const quoteRegex = /^['`,]/
   const parenthesesRegex = /^[\(\)]/
-  const symbolRegex = /^\d*[a-zA-Z\-!?+]+/
+  const symbolRegex = /^\d*[a-zA-Z0-9\-!?+]+/
   const numberRegex = /^-?\d+/
+  const stringRegex = /^"[\w\s]+"/
   const unusedCharacters = /^./
 
   const regexes = [
-    // quoteRegex,
     parenthesesRegex,
     symbolRegex,
     numberRegex,
+    stringRegex,
     unusedCharacters,
   ].map(regex => regex.source).join("|")
 
@@ -48,18 +48,11 @@ export const generateAST = (tokens: string[]): Expression => {
     return list
   }
 
-  // if (token === "'") {
-  //   return [
-  //     {
-  //       type: "symbol",
-  //       value: "quote",
-  //     },
-  //     generateAST(tokens) as any,
-  //   ]
-  // }
-
   if (/^-?\d+$/.test(token))
     return { type: "number", value: parseInt(token) }
+
+  if (/^"[\w\s]+"$/.test(token))
+    return { type: "string", value: token.replace(/\"/g, "") }
 
   return { type: "symbol", value: token }
 }

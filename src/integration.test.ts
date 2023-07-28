@@ -1,6 +1,6 @@
 import { describe, expect, it } from "@jest/globals"
 
-import { read } from "./reader"
+import { read, tokenize } from "./reader"
 import { evaluate } from "./evaluator"
 import { expressionToString } from "./printer"
 
@@ -106,9 +106,37 @@ describe("integration tests", () => {
     expect(interpreter("(qq (sum 1 2))")).toEqual("(sum 1 2)")
   })
 
-  it.only("quasiquote with unquote", () => {
+  it("quasiquote with unquote", () => {
     expect(interpreter("(qq (uq (sum 1 2)))")).toEqual("(3)")
   })
+
+  it("append strings", () => {
+    expect(interpreter(`(join "vec" "2")`)).toEqual("vec2")
+  })
+
+  it("define with join", () => {
+    interpreter(`(define (join "vec" "2") 10)`)
+    expect(interpreter("(sum 2 vec2)")).toEqual("12")
+  })
+
+  // "(sum 2 vec2" -> missing paren at end!
+
+  // it.only("tokenize", () => {
+  //   console.log(tokenize("(sum 2 vec2"))
+  // })
+
+  // it("define-macro", () => {
+  //   interpreter(`
+  //   (macro media-flash (lambda x)
+  //   (qq (do 
+  //     (define vec(uq x)-sum 1)
+  //     (define vec(uq x)-mul 2)
+  //     (define vec(uq x)-div 3)
+  //     (define vec(uq x)-sub 4))))
+  //   `)
+  //   interpreter("(do (media-flash 2) (media-flash 3))")
+  //   expect().toEqual("")
+  // })
 
   it("do block", () => {
     expect(interpreter(`

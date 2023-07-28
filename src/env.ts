@@ -1,6 +1,6 @@
 // import { readFile } from "../os/file-reader"
 
-import { NumberToken, AST_Token, EvaluatedToken, BoolToken } from "./token"
+import { NumberToken, AST_Token, EvaluatedToken, BoolToken, StringToken } from "./token"
 
 const sum = (numbers: NumberToken[]): NumberToken => ({
   type: "number",
@@ -17,12 +17,17 @@ const eq = (list: EvaluatedToken[]): BoolToken => ({
   value: list[0].value === list[1].value,
 })
 
+const join = (strings: StringToken[]) => ({
+  type: "string",
+  value: strings.map(s => s.value).join(""),
+})
 
 export const builtinEnv = {
   "even?": even,
   sum,
   eq,
-  PI: 3.141592653589793
+  PI: 3.141592653589793,
+  join,
   // "load-file":(a:any[])=> readFile(a[0])
 }
 
