@@ -8,11 +8,11 @@ const interpreter = (code) => expressionToString(evaluate(read(code)))
 
 describe("integration tests", () => {
   it("empty program - throws", () => {
-    expect(()=> interpreter("")).toThrow()
+    expect(() => interpreter("")).toThrow()
   })
 
   it("throws on single right paren", () => {
-    expect(()=> interpreter(")")).toThrow()
+    expect(() => interpreter(")")).toThrow()
   })
 
   it("sum two numbers", () => {
@@ -45,7 +45,7 @@ describe("integration tests", () => {
 
   it.skip("load file", () => {
     const result = interpreter(`(load-file "fib.zark")`)
-    console.log("loaded file: ",JSON.stringify(result, null, 2))
+    console.log("loaded file: ", JSON.stringify(result, null, 2))
     expect(result).toEqual(`#<procedure(fib)>`)
   })
 
@@ -157,11 +157,9 @@ describe("integration tests", () => {
     expect(interpreter("(sum 2 vec2)")).toEqual("12")
   })
 
-  // "(sum 2 vec2" -> missing paren at end!
-
-  // it.only("tokenize", () => {
-  //   console.log(tokenize("(sum 2 vec2"))
-  // })
+  it("throw on missing parenthesis at end of form", () => {
+    expect(() => interpreter("(sum 1 2")).toThrow()
+  })
 
   // it("define-macro", () => {
   //   interpreter(`

@@ -32,13 +32,15 @@ export const tokenize = (code: string): string[] => {
     remainingCode = remainingCode.slice(match.length).trimStart()
   }
 
-  return tokens
+  return tokens.concat("__EOF__")
 }
 
 export const generateAST = (tokens: string[]): Expression => {
+  // console.log('Tokens: ', tokens)
   if (tokens.length === 0) return []
 
   const token = tokens.shift()!
+  // console.log('TOK: ', token)
 
   if (token === ")")
     throw new Error("Unexpected )")
@@ -46,8 +48,10 @@ export const generateAST = (tokens: string[]): Expression => {
   if (token === "(") {
     const list: AST_Token[] = []
 
-    while (tokens[0] !== ")")
+    while (tokens[0] !== ")") {
+      if(tokens[0] === "__EOF__") throw new Error("Missing end parenthesis!")
       list.push(generateAST(tokens) as any)
+    }
 
     tokens.shift()
     return list
