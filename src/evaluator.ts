@@ -4,7 +4,7 @@ import { Expression, AST_Token, EvaluatedToken } from "./token"
 const defaultEnv = createEnv(Object.keys(builtinEnv), Object.values(builtinEnv))
 
 export const evaluate = (exp: Expression, env = defaultEnv) => {
-  console.log('what is exp: ', JSON.stringify(exp, null, 2))
+  // console.log('what is exp: ', JSON.stringify(exp, null, 2))
   if (isSymbol(exp)) {
     const result = findEnv(env, (exp as AST_Token).value as string)?.[(exp as AST_Token).value as string]
     if (typeof result === "function") return { type: "procedure", value: result }
@@ -173,8 +173,14 @@ export const evaluate = (exp: Expression, env = defaultEnv) => {
     throw new Error(formName + " procedure not implemented")
   }
 
-  if (formName === "loop") {
-    
+  if (formName === "while") {
+    const [condition, body] = formBody
+    let lastEvaluation
+    while (evaluate(condition, env).value) {
+      lastEvaluation = evaluate(body, env)
+    }
+
+    return lastEvaluation // maybe not necessary
   }
 
   const proc = evaluate(car(exp), env)

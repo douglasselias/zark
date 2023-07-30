@@ -45,7 +45,7 @@ describe("integration tests", () => {
 
   it.skip("load file", () => {
     const result = interpreter(`(load-file "fib.zark")`)
-    console.log("loaded file: ", JSON.stringify(result, null, 2))
+    // console.log("loaded file: ", JSON.stringify(result, null, 2))
     expect(result).toEqual(`#<procedure(fib)>`)
   })
 
@@ -181,6 +181,18 @@ describe("integration tests", () => {
       (define force 1)
       (sum gravity force))
     `)).toEqual("10")
+  })
+
+  it("while block", () => {
+    interpreter(`(define factorial (lambda (n)
+    (do 
+      (define acc n)
+      (while (greater-than n 2)
+        (do 
+          (set n (sub n 1))
+          (set acc (mul acc n))))
+      acc)))`) // this can work without acc at the end, since while returns the last value
+    expect(interpreter("(factorial 6)")).toEqual("720")
   })
 
   it("calls cdr", () => {

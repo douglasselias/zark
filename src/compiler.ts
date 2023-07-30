@@ -3,16 +3,16 @@ import { createEnv, Env, builtinEnv } from "./env"
 
 const compiledExpressions: string[] = []
 
-const compileFn = (name, args, body) => {
+// const compileFn = (name, args, body) => {
 
-}
+// }
 
 const defaultEnv = createEnv(Object.keys(builtinEnv), Object.values(builtinEnv))
 const generateHeaders = () => {
   compiledExpressions.push("// HEADERS - DEFAULT ENV")
   for (const entry of Object.entries(defaultEnv)) {
     const [key, value] = entry
-    console.log(entry)
+    // console.log(entry)
     if(key === "outer") continue // maybe recursive? but initial outer is null
 compiledExpressions.push(`const ${value.name} = ${value.toString()}`)
   }
@@ -21,7 +21,7 @@ compiledExpressions.push(`const ${value.name} = ${value.toString()}`)
 
 }
 generateHeaders()
-console.log(compiledExpressions.join("\n"))
+// console.log(compiledExpressions.join("\n"))
 
 export const compile = (exp: Expression) => {
   if (isSymbol(exp)) return (exp as AST_Token).value

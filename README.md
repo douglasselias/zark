@@ -9,6 +9,20 @@ it also suffers from the "benevolent dictator" since I own this, and everything 
 
 SHOULD HAVE AUTOMATIC NAMED PARAMETERS!!!
 
+---
+
+### Game ideas
+
+- super space squadron! 1-4 players rpg? open world/space? story?
+- rink slider
+- final b
+- reverse chess, reset chess, 1-2 players, time attack (1-2 set of pieces(white and black or just white/black))
+- time travel chess
+
+---
+
+i need a way to profile the compiler!
+
 maybe change regex to parser combinator? need to profile regex and parser combinator
 
 https://www.wikiwand.com/en/Shuhari

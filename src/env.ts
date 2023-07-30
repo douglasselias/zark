@@ -22,7 +22,7 @@ const sub = (numbers: (NumberToken | FloatToken)[]): NumberToken | FloatToken =>
 const div = (numbers: (NumberToken | FloatToken)[]): NumberToken | FloatToken => ({
   type: numbers.some(n => n.type === "float") ? "float" : "number",
   value: numbers.slice(1).reduce((total, current) => total / current.value, numbers[0].value),
-})
+})//over engineer!@!!!! initial value can be 1 the same with sub proc
 
 const even = (number: NumberToken[]): BoolToken => ({
   type: "bool",
@@ -68,7 +68,8 @@ export const builtinEnv = {
   PI: { type: "float", value: Math.PI },
   join,
   "load-file": loadFile,
-  "eval": evalFn
+  "eval": evalFn,
+  print: (v) => console.log(v)
 }
 
 // Object.getOwnPropertyNames(Math).forEach(propertyName => {

@@ -10,8 +10,8 @@ const benchmark = () => {
   var t0 = performance.now()
   const result = evaluate(read(exp))
   var t1 = performance.now()
-  console.log("Call to doSomething took " + (t1 - t0) + " milliseconds.")
-  console.log("Result: ", result)
+  // console.log("Call to doSomething took " + (t1 - t0) + " milliseconds.")
+  // console.log("Result: ", result)
 }
 
 benchmark()
