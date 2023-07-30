@@ -59,6 +59,38 @@ const evalFn = (exps: any[]) => {
   return evaluate(exps)
 }
 
+const toString = (args: (EvaluatedToken | EvaluatedToken[])[]) => {
+  const firstArg = args[0]
+  if (Array.isArray(firstArg))
+    return { type: "string", value: `(${firstArg.map(token => String(token.value)).join(" ")})` }
+  return { type: "string", value: String(firstArg.value) }
+}
+
+const toNumber = (args: (EvaluatedToken | EvaluatedToken[])[]) => {
+  const firstArg = args[0] as EvaluatedToken
+  // throw error if list
+  return { type: "number", value: Number(firstArg.value) }
+}
+
+const head = (args: (EvaluatedToken | EvaluatedToken[])[]) => {
+  const list = args[0] as EvaluatedToken[]
+  // throw error if not list
+  return list[0]
+}
+
+const tail = (args: (EvaluatedToken | EvaluatedToken[])[]) => {
+  const list = args[0] as EvaluatedToken[]
+  // throw error if not list
+  return list.slice(1)
+}
+
+const map = (args: (EvaluatedToken | EvaluatedToken[])[]) => {
+  const [fn, list] = args as any
+  return (list as EvaluatedToken[]).map(token => {
+   return fn.value([token]) // hmmm
+  })
+}
+
 export const builtinEnv = {
   "even?": even,
   sum, sub, div, mul,
@@ -69,7 +101,11 @@ export const builtinEnv = {
   join,
   "load-file": loadFile,
   "eval": evalFn,
-  print: (v) => console.log(v)
+  print: (v) => console.log(v),
+  "to-string": toString,
+  "to-number": toNumber,
+  head, tail,
+  map,
 }
 
 // Object.getOwnPropertyNames(Math).forEach(propertyName => {

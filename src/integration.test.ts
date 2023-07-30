@@ -195,6 +195,35 @@ describe("integration tests", () => {
     expect(interpreter("(factorial 6)")).toEqual("720")
   })
 
+  describe("to string", () => {
+    it("number", () => {
+      expect(interpreter("(to-string 10)")).toEqual("10") // hmm
+    })
+
+    it("list", () => {
+      expect(interpreter("(to-string (list 1 2 3))")).toEqual("(1 2 3)") // hmm
+    })
+  })
+
+  describe("to number", () => {
+    it("string", () => {
+      expect(interpreter(`(to-number "10")`)).toEqual("10") // hmm
+    })
+  })
+
+  it("head", () => { 
+    expect(interpreter(`(head (list 1 2 3))`)).toEqual("1")
+  })
+
+  it("tail", () => { 
+    expect(interpreter(`(tail (list 1 2 3))`)).toEqual("(2 3)")
+  })
+
+  it("map list", () => { 
+    interpreter("(define add-one (lambda (n) (sum n 1)))")
+    expect(interpreter(`(map add-one (list 1 2 3))`)).toEqual("(2 3 4)")
+  })
+
   it("calls cdr", () => {
     expect(interpreter("(cdr (list 1 2 3))")).toEqual("(2 3)")
   })
