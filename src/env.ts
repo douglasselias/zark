@@ -1,5 +1,5 @@
 import { readFile } from "../os/file-reader"
-import { evaluate } from "./evaluator"
+// import { evaluate } from "./evaluator"
 import { read } from "./reader"
 
 import { NumberToken, EvaluatedToken, BoolToken, StringToken, FloatToken } from "./token"
@@ -53,7 +53,7 @@ const loadFile = (path: StringToken[]) => read(readFile(path[0].value))
 
 const evalFn = (exps: any[]) => {
   // TODO, test...
-  return evaluate(exps)
+  // return evaluate(exps)
 }
 
 const toString = (args: (EvaluatedToken | EvaluatedToken[])[]) => {

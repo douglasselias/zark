@@ -276,7 +276,6 @@ describe("integration tests", () => {
   })
 
   it("call set procedure and throws error", () => {
-    interpreter("(define z 10)")
-    expect(() => interpreter("(set y 20)")).toThrow()
+    expect(() => interpreter("(set non-existent-symbol 20)")).toThrow()
   })
 })
