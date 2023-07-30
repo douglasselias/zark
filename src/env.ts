@@ -87,8 +87,34 @@ const tail = (args: (EvaluatedToken | EvaluatedToken[])[]) => {
 const map = (args: (EvaluatedToken | EvaluatedToken[])[]) => {
   const [fn, list] = args as any
   return (list as EvaluatedToken[]).map(token => {
-   return fn.value([token]) // hmmm
+    return fn.value([token]) // hmmm
   })
+}
+
+const size = (args: (EvaluatedToken | EvaluatedToken[])[]) => {
+  const [list] = args as any
+  if (Array.isArray(list))
+    return { type: "number", value: (list as EvaluatedToken[]).length }
+  throw new Error("size only accepts a single list as a paramenter")
+}
+
+const isList = (args: (EvaluatedToken | EvaluatedToken[])[]) => {
+  const [list] = args as any
+  return { type: "bool", value: Array.isArray(list) }
+  // throw new Error("size only accepts a single list as a paramenter")
+}
+
+const isString = (args: (EvaluatedToken | EvaluatedToken[])[]) => {
+  const [token] = args as any
+  return { type: "bool", value: token.type === "string" }
+  // throw new Error("size only accepts a single list as a paramenter")
+}
+
+const isNumber = (args: (EvaluatedToken | EvaluatedToken[])[]) => {
+  const [token] = args as any
+  return { type: "bool", value: token.type === "number" }
+  // need to add float
+  // throw new Error("size only accepts a single list as a paramenter")
 }
 
 export const builtinEnv = {
@@ -105,7 +131,8 @@ export const builtinEnv = {
   "to-string": toString,
   "to-number": toNumber,
   head, tail,
-  map,
+  map, size, "is-list": isList,
+  "is-string": isString, "is-number": isNumber,
 }
 
 // Object.getOwnPropertyNames(Math).forEach(propertyName => {

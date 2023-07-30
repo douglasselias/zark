@@ -224,6 +224,25 @@ describe("integration tests", () => {
     expect(interpreter(`(map add-one (list 1 2 3))`)).toEqual("(2 3 4)")
   })
 
+  it("size", () => { 
+    expect(interpreter(`(size (list 1 2 3))`)).toEqual("3")
+  })
+
+  it("is-list", () => { 
+    expect(interpreter(`(is-list (list 1 2 3))`)).toEqual("true")
+    expect(interpreter(`(is-list "hello")`)).toEqual("false")
+  })
+
+  it("is-number", () => { 
+    expect(interpreter(`(is-number 10)`)).toEqual("true")
+    expect(interpreter(`(is-number "10")`)).toEqual("false")
+  })
+
+  it("is-string", () => { 
+    expect(interpreter(`(is-string 10)`)).toEqual("false")
+    expect(interpreter(`(is-string "10")`)).toEqual("true")
+  })
+
   it("calls cdr", () => {
     expect(interpreter("(cdr (list 1 2 3))")).toEqual("(2 3)")
   })
