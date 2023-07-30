@@ -9,7 +9,7 @@ it also suffers from the "benevolent dictator" since I own this, and everything 
 
 SHOULD HAVE AUTOMATIC NAMED PARAMETERS!!!
 
----
+--- 
 
 ### Game ideas
 

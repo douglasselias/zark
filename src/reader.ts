@@ -32,7 +32,8 @@ export const tokenize = (code: string): string[] => {
     remainingCode = remainingCode.slice(match.length).trimStart()
   }
 
-  return tokens.concat("__EOF__")
+  return ["(", "do", ...tokens, ")", "__EOF__"]
+  // return (tokens.concat("__EOF__"))
 }
 
 export const generateAST = (tokens: string[]): Expression => {

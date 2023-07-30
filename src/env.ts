@@ -49,10 +49,7 @@ const join = (strings: StringToken[]) => ({
   value: strings.map(s => s.value).join(""),
 })
 
-const loadFile = (path: StringToken[]) => ({
-  type: "string", // eval should not be here...
-  value: evaluate(read(readFile(path[0].value))),
-})
+const loadFile = (path: StringToken[]) => read(readFile(path[0].value))
 
 const evalFn = (exps: any[]) => {
   // TODO, test...

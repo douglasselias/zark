@@ -64,24 +64,6 @@ def add_globals(self):
      'eof-object?':lambda x:x is eof_object, 'read-char':readchar,
      'display':lambda x,port=sys.stdout:port.write(x if isa(x,str) else to_string(x))})
 
-def eval(x, env=global_env):
-    while True:
-        if x[0] is _if:
-            (_, test, conseq, alt) = x
-            x = (conseq if eval(test, env) else alt)
-        elif x[0] is _begin:     # (begin exp+)
-            for exp in x[1:-1]:
-                eval(exp, env)
-            x = x[-1]
-        else:                    # (proc exp*)
-            exps = [eval(exp, env) for exp in x]
-            proc = exps.pop(0)
-            if isa(proc, Procedure):
-                x = proc.exp
-                env = Env(proc.parms, exps, proc.env)
-            else:
-                return proc(*exps)
-
 def expand(x, toplevel=False):
     elif x[0] is _quote:                 # (quote exp)
         return x

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "@jest/globals"
 
-import { read } from "./reader"
+import { generateAST, read, tokenize } from "./reader"
 import { evaluate } from "./evaluator"
 import { expressionToString } from "./printer"
 
@@ -43,14 +43,15 @@ describe("integration tests", () => {
     expect(interpreter("(less-than 1 2)")).toEqual("true")
   })
 
-  it.skip("load file", () => {
-    const result = interpreter(`(load-file "fib.zark")`)
-    // console.log("loaded file: ", JSON.stringify(result, null, 2))
-    expect(result).toEqual(`#<procedure(fib)>`)
+  it("load file", () => {
+    const result = interpreter(`(eval (load-file "factorial.zark"))`)
+    // console.error("loaded file: ", JSON.stringify(result, null, 2))
+    expect(result).toEqual(`6`)
   })
 
-  it.skip("loops", () => {
-    expect(interpreter(``))
+  it("multiple expressions", () => {
+    expect(interpreter(`(define x 1)
+    (define y 2)`)).toEqual("2")
   })
 
   it("defines a value and sum by itself", () => {
