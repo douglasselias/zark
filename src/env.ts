@@ -1,5 +1,4 @@
 import { readFile } from "../os/file-reader"
-// import { evaluate } from "./evaluator"
 import { read } from "./reader"
 
 import { NumberToken, EvaluatedToken, BoolToken, StringToken, FloatToken } from "./token"
@@ -22,7 +21,7 @@ const sub = (numbers: (NumberToken | FloatToken)[]): NumberToken | FloatToken =>
 const div = (numbers: (NumberToken | FloatToken)[]): NumberToken | FloatToken => ({
   type: numbers.some(n => n.type === "float") ? "float" : "number",
   value: numbers.slice(1).reduce((total, current) => total / current.value, numbers[0].value),
-})//over engineer!@!!!! initial value can be 1 the same with sub proc
+})
 
 const even = (number: NumberToken[]): BoolToken => ({
   type: "bool",
@@ -51,11 +50,6 @@ const join = (strings: StringToken[]) => ({
 
 const loadFile = (path: StringToken[]) => read(readFile(path[0].value))
 
-const evalFn = (exps: any[]) => {
-  // TODO, test...
-  // return evaluate(exps)
-}
-
 const toString = (args: (EvaluatedToken | EvaluatedToken[])[]) => {
   const firstArg = args[0]
   if (Array.isArray(firstArg))
@@ -65,26 +59,30 @@ const toString = (args: (EvaluatedToken | EvaluatedToken[])[]) => {
 
 const toNumber = (args: (EvaluatedToken | EvaluatedToken[])[]) => {
   const firstArg = args[0] as EvaluatedToken
-  // throw error if list
+  if (Array.isArray(firstArg))
+    throw new Error("to-number expects a single argument, not a list")
   return { type: "number", value: Number(firstArg.value) }
 }
 
 const head = (args: (EvaluatedToken | EvaluatedToken[])[]) => {
   const list = args[0] as EvaluatedToken[]
-  // throw error if not list
+  if (!Array.isArray(list))
+    throw new Error("head expects a single list as argument")
   return list[0]
 }
 
 const tail = (args: (EvaluatedToken | EvaluatedToken[])[]) => {
   const list = args[0] as EvaluatedToken[]
-  // throw error if not list
+  if (!Array.isArray(list))
+    throw new Error("tail expects a single list as argument")
   return list.slice(1)
 }
 
 const map = (args: (EvaluatedToken | EvaluatedToken[])[]) => {
   const [fn, list] = args as any
   return (list as EvaluatedToken[]).map(token => {
-    return fn.value([token]) // hmmm
+    // must return as array since every fn in env expects an array
+    return fn.value([token])
   })
 }
 
@@ -98,20 +96,16 @@ const size = (args: (EvaluatedToken | EvaluatedToken[])[]) => {
 const isList = (args: (EvaluatedToken | EvaluatedToken[])[]) => {
   const [list] = args as any
   return { type: "bool", value: Array.isArray(list) }
-  // throw new Error("size only accepts a single list as a paramenter")
 }
 
 const isString = (args: (EvaluatedToken | EvaluatedToken[])[]) => {
   const [token] = args as any
   return { type: "bool", value: token.type === "string" }
-  // throw new Error("size only accepts a single list as a paramenter")
 }
 
 const isNumber = (args: (EvaluatedToken | EvaluatedToken[])[]) => {
   const [token] = args as any
-  return { type: "bool", value: token.type === "number" }
-  // need to add float
-  // throw new Error("size only accepts a single list as a paramenter")
+  return { type: "bool", value: token.type === "number" || token.type === "float" }
 }
 
 export const builtinEnv = {
@@ -123,7 +117,6 @@ export const builtinEnv = {
   PI: { type: "float", value: Math.PI },
   join,
   "load-file": loadFile,
-  "eval": evalFn,
   print: (v) => console.log(v),
   "to-string": toString,
   "to-number": toNumber,
@@ -132,9 +125,22 @@ export const builtinEnv = {
   "is-string": isString, "is-number": isNumber,
 }
 
-// Object.getOwnPropertyNames(Math).forEach(propertyName => {
-//   builtinEnv[propertyName] = Math[propertyName]
-// })
+export const builtinEnvForCompilation = {
+  "even?": even,
+  sum: (a, b) => a + b, sub, div, mul,
+  "less-than": lessThan,
+  "greater-than": greaterThan,
+  eq,
+  PI: Math.PI,
+  join,
+  "load-file": loadFile,
+  print: (v) => console.log(v),
+  "to-string": toString,
+  "to-number": toNumber,
+  head, tail,
+  map, size, "is-list": isList,
+  "is-string": isString, "is-number": isNumber,
+}
 
 export type Env = {
   [key: string]: any

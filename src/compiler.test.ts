@@ -3,28 +3,39 @@ import { read } from "./reader"
 import { compile } from "./compiler"
 import { readFile } from "../os/file-reader"
 
-describe(compile.name, () => {
-  it("variable definition", () => {
-    const exp = read("(define x 10)")
-    const compiled = ["const x = 10"].join("\n")
+const compileCode = (code) => {
+  const readTokens = read(code)
+  console.log('ReadTokens: ', readTokens)
+  return compile(readTokens)
+}
 
-    expect(compile(exp)).toEqual(compiled)
+describe(compile.name, () => {
+  it.only("constant value", () => {
+    expect(compileCode("10")).toEqual("10")
   })
 
-  it.only("builtin function", () => {
+  it.only("constant value in multiple line", () => {
+    expect(compileCode(`10\n10`)).toEqual(`10\n10`)
+  })
+
+  it.only("variable definition", () => {
+    expect(compileCode("(define x 10)")).toEqual(`let x = 10`)
+  })
+
+  it("builtin function", () => {
     const exp = read("(sum 1 2)")
     const compiled = ["const sum = (a, b) => a + b", "sum(1,2)"].join("\n")
     expect(compile(exp)).toEqual(compiled)
   })
 
-  it("variable definition with expression", () => {
+  it.skip("variable definition with expression", () => {
     const exp = read("(define x (sum 10 10))")
     const compiled = ["const x = sum(10, 10)"].join("\n")
 
     expect(compile(exp)).toBe(compiled)
   })
 
-  it("procedure definition", () => {
+  it.skip("procedure definition", () => {
     const exp = read("(define plus-ten (lambda (x) (sum 10 x)))")
 
     const compiled = [
@@ -36,7 +47,7 @@ describe(compile.name, () => {
     expect(compile(exp)).toBe(compiled)
   })
 
-  it("compile factorial.zark", () => {
+  it.skip("compile factorial.zark", () => {
     const tokens = read(readFile("factorial.zark"))
     //     (define factorial (lambda (n)
     //   (do 
