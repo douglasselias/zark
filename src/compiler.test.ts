@@ -10,41 +10,65 @@ const compileCode = (code) => {
 }
 
 describe(compile.name, () => {
-  it.only("constant value", () => {
+  it("constant number", () => {
     expect(compileCode("10")).toEqual("10")
   })
 
-  it.only("constant value in multiple line", () => {
+  it("constant float", () => {
+    expect(compileCode("10.12")).toEqual("10.12")
+  })
+
+  it("constant string", () => {
+    expect(compileCode(`"hello"`)).toEqual(`hello`)
+  })
+
+  it("constant number in multiple line", () => {
     expect(compileCode(`10\n10`)).toEqual(`10\n10`)
   })
 
-  it.only("variable definition", () => {
+  it("variable definition", () => {
     expect(compileCode("(define x 10)")).toEqual(`let x = 10`)
   })
 
+  it("builtin constant", () => {
+    expect(compileCode(`PI`))
+      .toEqual(`3.141592653589793`)
+  })
+
   it("builtin function", () => {
-    const exp = read("(sum 1 2)")
-    const compiled = ["const sum = (a, b) => a + b", "sum(1,2)"].join("\n")
-    expect(compile(exp)).toEqual(compiled)
+    expect(compileCode(`sum`))
+      .toEqual(`const sum = (n) => n.reduce((acc, curr) => acc + curr, 0)`)
   })
 
-  it.skip("variable definition with expression", () => {
-    const exp = read("(define x (sum 10 10))")
-    const compiled = ["const x = sum(10, 10)"].join("\n")
-
-    expect(compile(exp)).toBe(compiled)
+  it("builtin function calling", () => {
+    expect(compileCode(`(sum 1 2)`))
+      .toEqual(`const sum = (n) => n.reduce((acc, curr) => acc + curr, 0)\nsum(1,2)`)
   })
 
-  it.skip("procedure definition", () => {
-    const exp = read("(define plus-ten (lambda (x) (sum 10 x)))")
+  it("variable definition with expression", () => {
+    expect(compileCode(`(define x (sum 1 2))`))
+      .toEqual(`const sum = (n) => n.reduce((acc, curr) => acc + curr, 0)\nlet x = sum(1,2)`)
+  })
 
-    const compiled = [
-      "const plus-ten = (x) => {",
-      "return sum(10 x)",
-      "}"
-    ].join("\n")
+  it("variable definition with expression as symbol", () => {
+    expect(compileCode(`(define (join "v" "2") 1)`))
+      .toEqual(`let v2 = 1`)
+  })
 
-    expect(compile(exp)).toBe(compiled)
+  // it.only("lambda definition", () => {
+  //   expect(compileCode(`(lambda (x) (sum 10 x))`))
+  //     .toEqual(`const plus-ten = (x) => {
+  //       return sum(10 x)
+  //     }`)
+  // })
+
+  it.only("procedure definition", () => {
+    expect(compileCode(`
+    (define plusTen 
+      (lambda (x) (sum 10 x)))`))
+      .toEqual(`const plusTen = (x) => {
+        return sum(10 x)
+      }`)
   })
 
   it.skip("compile factorial.zark", () => {

@@ -127,12 +127,13 @@ export const builtinEnv = {
 
 export const builtinEnvForCompilation = {
   "even?": even,
-  sum: (a, b) => a + b, sub, div, mul,
+  sum: (n) => n.reduce((acc, curr) => acc + curr, 0),
+  sub, div, mul,
   "less-than": lessThan,
   "greater-than": greaterThan,
   eq,
   PI: Math.PI,
-  join,
+  join: (c) => c.join(""),
   "load-file": loadFile,
   print: (v) => console.log(v),
   "to-string": toString,

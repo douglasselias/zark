@@ -1,31 +1,42 @@
 import { Expression, AST_Token } from "./token"
 import { findEnv, builtinEnvForCompilation, createEnv, Env } from "./env"
 
-const compiledExpressions: string[] = []
 const defaultEnv = createEnv(Object.keys(builtinEnvForCompilation), Object.values(builtinEnvForCompilation))
 
 export const compile = (exp: Expression, env = defaultEnv) => {
   if (isSymbol(exp)) {
     const result = findEnv(env, (exp as AST_Token).value as string)?.[(exp as AST_Token).value as string]
-    if (typeof result === "function") return { type: "procedure", value: result }
+    if (typeof result === "function") {
+      return `const ${result.name} = ${result.toString()}`
+    }
     return result
   }
-  if (isNum(exp)) {
-    const num = String((exp as AST_Token).value)
-    // compiledExpressions.push(num)
-    return num
-  }
-  if (isFloat(exp)) return (exp as AST_Token)
-  if (isString(exp)) return (exp as AST_Token)
+  if (isNum(exp)) return (exp as AST_Token).value
+  if (isFloat(exp)) return (exp as AST_Token).value
+  if (isString(exp)) return (exp as AST_Token).value
 
   const formName = car(exp).value
   const formBody = cdr(exp)
 
   if (formName === "define") {
     const [name, subExp] = formBody
-    let n = isList(name) ? compile(name, env) : name
-    env[n.value as string] = compile(subExp, env)
-    return env[n.value as string]
+    if (isList(subExp)) {
+      const [fn, result] = compile(subExp, env).split("\n")
+      return `${fn}\nlet ${name.value} = ${result}`
+    }
+
+    if (isList(name)) {
+      const [fn, result] = compile(name, env).split("\n")
+      const fnName = fn.split(" ")[1]
+      const fnArgs = result.split("(")[1].split(")")[0].split(",").map(a => `"${a}"`).join(",")
+      const c = `${fnName}([${fnArgs}])`
+      const finalFnName = eval(fn+";"+c)
+      return `let ${finalFnName} = ${subExp.value}`
+    }
+
+    return `let ${name.value} = ${subExp.value}`
+    // env[n.value as string] = compile(subExp, env)
+    // return env[n.value as string]
   }
 
   if (formName === "lambda") {
@@ -166,8 +177,12 @@ export const compile = (exp: Expression, env = defaultEnv) => {
 
   const proc = compile(car(exp), env)
   const args = evalList(cdr(exp), env)
+  // console.error("PROC: ", proc)
+  // console.error("ARGS: ", args)
   // return proc.value(args)
-  return compiledExpressions.join("\n")
+  const procName = proc.split(" ")[1]
+  return `${proc}\n${procName}(${args.join(",")})`
+  // return compiledExpressions.join("\n")
 }
 
 const isSymbol = (exp: Expression) => isAtom(exp) && (exp as AST_Token).type === "symbol"
