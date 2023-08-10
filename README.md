@@ -11,14 +11,6 @@ SHOULD HAVE AUTOMATIC NAMED PARAMETERS!!!
 
 --- 
 
-### Game ideas
-
-- super space squadron! 1-4 players rpg? open world/space? story?
-- rink slider
-- final b
-- reverse chess, reset chess, 1-2 players, time attack (1-2 set of pieces(white and black or just white/black))
-- time travel chess
-
 ---
 
 i need a way to profile the compiler!
@@ -28,15 +20,10 @@ maybe change regex to parser combinator? need to profile regex and parser combin
 https://www.wikiwand.com/en/Shuhari
 http://rigaux.org/language-study/syntax-across-languages/
 
-https://floooh.github.io/2018/06/17/handles-vs-pointers.html
-
 https://www.reddit.com/r/lisp/comments/4mtktn/bone_01_lisp_without_garbage_collection/
-
-http://www.newlisp.org/MemoryManagement.html
 
 https://www.cs.cmu.edu/Groups/AI/html/cltl/clm/node188.html
 
-https://github.com/Ivo-Balbaert/The_Way_to_Jai/blob/main/book/25_Context.md
 
 ---
 ```lisp
@@ -113,13 +100,6 @@ https://www.wikiwand.com/en/Lexical_analysis#Token
 
 ---
 
-Game idea: chess but to go to initial position
-pkmn prog langs game - in my personal blog
-world builder 3
-
-https://floooh.github.io/2018/06/17/handles-vs-pointers.html
-
----
   // tokenize()
   // const stringRegex = /^"[\w\s]+"/ 
 
@@ -418,29 +398,7 @@ Explicit TCO (i.e. recur) with tail-position error checking
 
 ---
 
- Time Complexity;
-- Understanding different programming paradigms;
-- Understand recursion;
-- Understand boolean logic (very well);
-- Algorithms:
-	- Sorting algorithms;
-	- Popular Algorithms;
-- Operating Systems:
-	- What it is;
-	- How it works;
-	- What a File System is and how it works;
-- DataStructures:
-	- Understand how they live in memory;
-	- Some basic datastructures;
-	- How to build, navigate and isnert into a binary tree;
-- How floating points work;
-- Databases: 
-	- What it is;
-	- How it works;
-	- Concurrency;
-	- Normalization;
--Data races;
--Implementing Malloc;
+
 
 ---
 
