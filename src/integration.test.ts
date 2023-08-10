@@ -1,6 +1,6 @@
 import { describe, expect, it } from "@jest/globals"
 
-import { generateAST, read, tokenize } from "./reader"
+import { read } from "./reader"
 import { evaluate } from "./evaluator"
 import { expressionToString } from "./printer"
 
@@ -45,7 +45,6 @@ describe("integration tests", () => {
 
   it("load file", () => {
     const result = interpreter(`(eval (load-file "factorial.zark"))`)
-    // console.error("loaded file: ", JSON.stringify(result, null, 2))
     expect(result).toEqual(`6`)
   })
 
@@ -161,19 +160,6 @@ describe("integration tests", () => {
   it("throw on missing parenthesis at end of form", () => {
     expect(() => interpreter("(sum 1 2")).toThrow()
   })
-
-  // it("define-macro", () => {
-  //   interpreter(`
-  //   (macro media-flash (lambda x)
-  //   (qq (do 
-  //     (define vec(uq x)-sum 1)
-  //     (define vec(uq x)-mul 2)
-  //     (define vec(uq x)-div 3)
-  //     (define vec(uq x)-sub 4))))
-  //   `)
-  //   interpreter("(do (media-flash 2) (media-flash 3))")
-  //   expect().toEqual("")
-  // })
 
   it("do block", () => {
     expect(interpreter(`

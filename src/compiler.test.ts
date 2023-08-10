@@ -55,13 +55,6 @@ describe(compile.name, () => {
       .toEqual(`let v2 = 1`)
   })
 
-  // it.only("lambda definition", () => {
-  //   expect(compileCode(`(lambda (x) (sum 10 x))`))
-  //     .toEqual(`const plus-ten = (x) => {
-  //       return sum(10 x)
-  //     }`)
-  // })
-
   it.only("procedure definition", () => {
     expect(compileCode(`
     (define plusTen 
@@ -73,16 +66,6 @@ describe(compile.name, () => {
 
   it.skip("compile factorial.zark", () => {
     const tokens = read(readFile("factorial.zark"))
-    //     (define factorial (lambda (n)
-    //   (do 
-    //     (define acc n)
-    //     (while (less-than n 2)
-    //       (do 
-    //         (set n (sub n 1))
-    //         (set acc (mul acc n))))
-    //     acc)))
-
-    // (factorial 6)
     expect(compile(tokens)).toEqual(`const factorial = (n) => {
 let acc = n
 while(n < 2) {
