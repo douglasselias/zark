@@ -1,5 +1,0 @@
-just:
-  cc -std=c99 -Wall main.c -ledit -lm -o main.exe && ./main.exe
-
-debug:
-  gcc -std=c99 -Wall main.c -ledit -lm -ggdb3 -o main-debug.exe
